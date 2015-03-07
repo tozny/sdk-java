@@ -50,7 +50,7 @@ public class RealmApiTest extends TestCase
 
         this.realmConfig = new RealmConfig(
                 new ToznyRealmKeyId("sid_52fa6d0a3a290"),
-                new ToznyRealmSecret("af3d3d89176e4eeccb8b560d2d9e33df1d0699aebab4c7a7a45964b69c785cb7")
+                new ToznyRealmSecret("")
 
         );
 
