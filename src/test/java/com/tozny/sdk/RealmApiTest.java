@@ -1,99 +1,92 @@
 package com.tozny.sdk;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.Session;
 import com.tozny.sdk.realm.User;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.io.IOException;
 
 /**
  * Unit test for simple App.
  */
-public class RealmApiTest extends TestCase
-{
-
+public class RealmApiTest {
     static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     private HttpRequestFactory requestFactory;
     private RealmConfig realmConfig;
+    private RealmApi realmApi;
 
-    private  RealmApi realmApi;
+    // Test variables taken from the environment.
+    private String realmKeyId;
+    private String realmSecret;
+    private String userId;
+    private String userEmail;
 
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RealmApiTest(String testName)
-    {
-        super( testName );
-
+    @Before
+    public void init() throws Exception {
         this.requestFactory =
-                HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-                    @Override
-                    public void initialize(HttpRequest request) {
-                        request.setParser(new JsonObjectParser(JSON_FACTORY));
-                    }
-                });
+            HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+                @Override
+                public void initialize(HttpRequest request) {
+                    request.setParser(new JsonObjectParser(JSON_FACTORY));
+                }
+            });
+
+        String testPropertiesFile = System.getProperty("testProperties");
+        assertNotNull(testPropertiesFile);
+
+        InputStream is = new FileInputStream(testPropertiesFile);
+        Properties props = new Properties();
+        props.load(is);
+
+        this.realmKeyId = props.getProperty("realmKey");;
+        this.realmSecret = props.getProperty("realmSecret");
+        this.userId = props.getProperty("userId");
+        this.userEmail = props.getProperty("userEmail");
 
         this.realmConfig = new RealmConfig(
-                new ToznyRealmKeyId("sid_52fa6d0a3a290"),
-                new ToznyRealmSecret("")
-
+            new ToznyRealmKeyId(this.realmKeyId),
+            new ToznyRealmSecret(this.realmSecret)
         );
-
 
         this.realmApi = new RealmApi(realmConfig, requestFactory, JSON_FACTORY);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( RealmApiTest.class );
-    }
-
-
-    /**
-     *
-     */
+    @Test
     public void testUserGet() throws IOException {
-
-        User user = this.realmApi.userGet("sid_5302bde69d72f");
-
-        assertEquals("kirk@tozny.com",user.meta.get("email"));
-
-        user = this.realmApi.userGetByEmail("kirk@tozny.com");
-
-        assertEquals("sid_5302bde69d72f",user.user_id);
+        User user = this.realmApi.userGet(this.userId);
+        assertEquals(this.userEmail, user.meta.get("email"));
+        user = this.realmApi.userGetByEmail(this.userEmail);
+        assertEquals(this.userId, user.user_id);
     }
 
+    @Test
     public void testUserExists() throws IOException {
-
-        boolean exists = this.realmApi.userExists("sid_5302bde69d72f");
-
-        assertTrue( exists );
-
-        exists = this.realmApi.userExistsByEmail("kirk@tozny.com");
-
-        assertTrue( exists );
+        boolean exists = this.realmApi.userExists(this.userId);
+        assertTrue(exists);
+        exists = this.realmApi.userExistsByEmail(this.userEmail);
+        assertTrue(exists);
     }
 
+    @Test
     public void testQuestionChallenge() throws IOException {
-
         Session session = this.realmApi.questionChallenge("Do you like Java?");
 
         assertNotNull(session.challenge);
@@ -105,14 +98,12 @@ public class RealmApiTest extends TestCase
         assertNotNull(session.created_at);
     }
 
+    @Test
     public void testCheckValidLogin() throws IOException {
-
         try {
             boolean isValid = this.realmApi.checkValidLogin("bad", "worse");
             fail("bad session and user_id values should throw an exception");
         }
         catch (ToznyApiException e ) { assertTrue(true); }
-
     }
 }
-

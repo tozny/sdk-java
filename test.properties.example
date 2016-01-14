@@ -1,0 +1,17 @@
+#
+# test.properties --- Java SDK unit test properties.
+#
+# Copyright (C) 2016, Tozny, LLC.
+# All Rights Reserved.
+#
+# Released under the Apache license. See the file 'LICENSE'
+# for more information.
+#
+
+# Replace these values with your realm key, secret, and user
+# information from the Tozny admin console at https://admin.tozny.com
+# and rename this file to "test.properties".
+realmKey = sid_1234567890abc
+realmSecret = 20349823049234809248039482034983498
+userId = sid_3439843948
+userEmail = foo@example.com
