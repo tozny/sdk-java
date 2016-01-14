@@ -22,6 +22,7 @@ public class UserGetResponse extends ToznyApiResponse {
      * @return the Realm's User record.
      * @throws ToznyApiException if we are unable to convert the JSON response into a User type
      */
+    @SuppressWarnings("unchecked")
     public User getUser () throws ToznyApiException {
         Object resultsObject = this.get("results");
         if (resultsObject == null || !(resultsObject instanceof Map)) {
@@ -210,6 +211,3 @@ public class UserGetResponse extends ToznyApiResponse {
         return user;
     }
 }
-
-
-

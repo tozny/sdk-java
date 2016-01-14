@@ -48,6 +48,7 @@ public class ToznyApiResponse extends GenericJson {
      * API code the error originated.
      * @return a ToznyApiException exception, with the error response from the Tozny API
      */
+    @SuppressWarnings("unchecked")
     public ToznyApiException getException () {
         assert(isError());
 

@@ -46,10 +46,12 @@ public class ToznyApiException extends RuntimeException {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ToznyApiException(String message, Throwable cause) {
         super(message,cause);
         this.errors = Collections.EMPTY_LIST;
     }
+    @SuppressWarnings("unchecked")
     public ToznyApiException(String message) {
         super(message);
         this.errors = Collections.EMPTY_LIST;
