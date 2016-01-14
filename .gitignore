@@ -13,3 +13,10 @@ hs_err_pid*
 
 .idea
 *.iml
+
+.bundle
+.gradle
+build
+target
+*.swp
+/test.properties
