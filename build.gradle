@@ -11,7 +11,15 @@ plugins {
 }
 
 group = 'com.tozny.sdk'
-version = '1.0-SNAPSHOT'
+
+def baseVersion = "1.0"
+def buildNumber = System.getenv("BUILD_NUMBER")
+
+if (buildNumber != null) {
+  version = "$baseVersion.$buildNumber"
+} else {
+  version = "$baseVersion-SNAPSHOT"
+}
 
 description = 'tozny-sdk'
 
