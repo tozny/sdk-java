@@ -16,19 +16,24 @@ public class RealmConfig {
     public final ToznyRealmSecret realmSecret;
 
     /**
-     * Constructs a RealmConfig instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
-     * production Tozny API urls.
-     * @param realmKeyId
-     * @param realmSecret
+     * Constructs a RealmConfig instance using the given ToznyRealmKeyId
+     * and ToznyRealmSecret instances with the production Tozny API urls.
+     *
+     * @param realmKeyId key ID of realm to authenticate to
+     * @param realmSecret secret of realm to authenticate to
      */
     public RealmConfig(ToznyRealmKeyId realmKeyId,  ToznyRealmSecret realmSecret) {
         this(ToznyApiUrl.TOZNY_PRODUCTION_API_URL, realmKeyId,realmSecret);
     }
+
     /**
-     * Constructs a RealmConfig instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
-     * given Tozny API url (useful for testing against Tozny's development environments).
-     * @param realmKeyId
-     * @param realmSecret
+     * Constructs a RealmConfig instance using the given ToznyRealmKeyId
+     * and ToznyRealmSecret instances with the given Tozny API url
+     * (useful for testing against Tozny's development environments).
+     *
+     * @param apiUrl Tozny API URL, default: <pre>https://api.tozny.com</pre>
+     * @param realmKeyId key ID of realm to authenticate to
+     * @param realmSecret secret of realm to authenticate to
      */
     public RealmConfig(String apiUrl, ToznyRealmKeyId realmKeyId,  ToznyRealmSecret realmSecret) {
         this.apiUrl = apiUrl;

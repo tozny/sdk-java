@@ -42,7 +42,7 @@ public class Protocol {
      * Encodes the given byte array into a URL safe Base64 encoding.
      *
      * @param bytes the bytes to encode.
-     * @returna URL safe Base64 encoding of the given bytes.
+     * @return URL safe Base64 encoding of the given bytes.
      */
     public static String base64UrlEncode (byte[] bytes) {
         // Base64 in commons codec v.1.3 doesn't have builtin url-safe base64 encoding

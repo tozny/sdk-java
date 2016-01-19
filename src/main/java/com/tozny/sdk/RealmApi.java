@@ -173,7 +173,7 @@ public class RealmApi {
      * @param dataClass The response marshalling class.
      * @param <T> A descendant of ToznyApiResponse, which will provide helpers for managing ToznyAPI errors.
      * @return an instance of the given dataClass.
-     * @throws ToznyApiException
+     * @throws ToznyApiException if an I/O or protocol error occurs during the API call
      */
     public <T extends ToznyApiResponse> T rawCall (GenericUrl url, Class<T> dataClass) throws ToznyApiException {
         T apiResponse;
