@@ -5,10 +5,15 @@
 // All Rights Reserved.
 //
 
-plugins {
-  id 'java'
-  id 'jacoco'
+allprojects {
+  apply plugin: 'java'
+
+  repositories {
+    maven { url "http://repo.maven.apache.org/maven2" }
+  }
 }
+
+apply plugin: 'jacoco'
 
 group = 'com.tozny.sdk'
 
@@ -23,13 +28,9 @@ if (buildNumber != null) {
 
 description = 'tozny-sdk'
 
-repositories {
-  maven { url "http://repo.maven.apache.org/maven2" }
-}
-
 dependencies {
-  compile group: 'com.google.http-client', name: 'google-http-client',          version: '1.19.0'
-  compile group: 'com.google.http-client', name: 'google-http-client-jackson2', version: '1.19.0'
+  compile group: 'com.google.http-client', name: 'google-http-client',          version: '1.21.0'
+  compile group: 'com.google.http-client', name: 'google-http-client-jackson2', version: '1.21.0'
 
   testCompile group: 'junit', name: 'junit', version: '4.12'
 
