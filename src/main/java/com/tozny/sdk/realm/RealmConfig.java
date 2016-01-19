@@ -16,7 +16,7 @@ public class RealmConfig {
     public final ToznyRealmSecret realmSecret;
 
     /**
-     * Constructs a RealmConfif instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
+     * Constructs a RealmConfig instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
      * production Tozny API urls.
      * @param realmKeyId
      * @param realmSecret
@@ -25,7 +25,7 @@ public class RealmConfig {
         this(ToznyApiUrl.TOZNY_PRODUCTION_API_URL, realmKeyId,realmSecret);
     }
     /**
-     * Constructs a RealmConfif instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
+     * Constructs a RealmConfig instance using the given ToznyRealmKeyId & ToznyRealmSecret instances with the
      * given Tozny API url (useful for testing against Tozny's development environments).
      * @param realmKeyId
      * @param realmSecret

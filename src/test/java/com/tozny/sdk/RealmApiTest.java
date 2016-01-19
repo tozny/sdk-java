@@ -5,12 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +20,6 @@ import com.tozny.sdk.realm.config.ToznyRealmSecret;
  * Unit test for simple App.
  */
 public class RealmApiTest {
-    static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    static final JsonFactory JSON_FACTORY = new JacksonFactory();
-
-    private HttpRequestFactory requestFactory;
     private RealmConfig realmConfig;
     private RealmApi realmApi;
 
@@ -41,14 +31,6 @@ public class RealmApiTest {
 
     @Before
     public void init() throws Exception {
-        this.requestFactory =
-            HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-                @Override
-                public void initialize(HttpRequest request) {
-                    request.setParser(new JsonObjectParser(JSON_FACTORY));
-                }
-            });
-
         String testPropertiesFile = System.getProperty("testProperties");
         assertNotNull(testPropertiesFile);
 
@@ -66,7 +48,7 @@ public class RealmApiTest {
             new ToznyRealmSecret(this.realmSecret)
         );
 
-        this.realmApi = new RealmApi(realmConfig, requestFactory, JSON_FACTORY);
+        this.realmApi = new RealmApi(realmConfig);
     }
 
     @Test

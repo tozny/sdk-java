@@ -1,10 +1,20 @@
 package com.tozny.sdk;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.Session;
 import com.tozny.sdk.realm.User;
@@ -17,10 +27,6 @@ import com.tozny.sdk.realm.methods.user_exists.UserExistsUrl;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
 import com.tozny.sdk.realm.methods.user_get.UserGetUrl;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 /**
  * Main entry point to the Tozny API's Realm calls.
  * Realm cals are typically used by Service Providers, web-site owners, or realm operators.
@@ -31,6 +37,15 @@ public class RealmApi {
     public final RealmConfig config;
     public final HttpRequestFactory requestFactory;
     public final JsonFactory jsonFactory;
+
+    /**
+     * Builds a RealmApi instance.
+     *
+     * @param config the Realm's KeyID and Secret to use on all realm calls
+     */
+    public RealmApi(RealmConfig config) {
+        this(config, getDefaultRequestFactory(), getDefaultJsonFactory());
+    }
 
     /**
      * Builds a RealmApi instance
@@ -178,5 +193,20 @@ public class RealmApi {
         else return apiResponse;
     }
 
+    // Default HTTP and JSON factories.
+    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
+    private static HttpRequestFactory getDefaultRequestFactory() {
+        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+            @Override
+            public void initialize(HttpRequest request) {
+                request.setParser(new JsonObjectParser(JSON_FACTORY));
+            }
+        });
+    }
+
+    private static JsonFactory getDefaultJsonFactory() {
+        return JSON_FACTORY;
+    }
 }
