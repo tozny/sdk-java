@@ -1,0 +1,35 @@
+{{<layout}}
+{{$title}}Tozny Java Secret Message Example{{/title}}
+{{$head}}
+  <script src="https://api.tozny.com/interface/javascript/v2/jquery.tozny.js"></script>
+{{/head}}
+{{$body}}
+  <h1>Tozny Java Secret Message Example</h1>
+  <p class="lead">Log in to see the secret message.</p>
+
+  {{#errors}}
+  <div class="alert alert-danger" role="alert">
+    <p>{{.}}</p>
+  </div>
+  {{/errors}}
+
+  <div id="tozny-login"></div>
+  <script>
+    jQuery(function($) {
+      $('#tozny-login').tozny({
+        realm_key_id: '{{realmKeyId}}',
+        debug: true,
+        success_callback: function(data) {
+          $.post('{{loginUrl}}', {
+            signed_data: data.signed_data,
+            signature: data.signature
+          })
+          .success(function() { window.location = '{{protectedUrl}}'  })
+          .error(function() { window.location = '?error=Invalid+login' });
+        },
+        style: 'box'
+      });
+    });
+  </script>
+{{/body}}
+{{/layout}}

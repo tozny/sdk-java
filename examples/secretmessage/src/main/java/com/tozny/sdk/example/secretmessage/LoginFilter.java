@@ -14,8 +14,8 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebFilter;
+import javax.ws.rs.core.UriBuilder;
 
-@WebFilter("/protected/*")
 public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig config) throws ServletException {
@@ -42,7 +42,13 @@ public class LoginFilter implements Filter {
         }
 
         // User is not authenticated, redirect to login URL.
-        String path = req.getContextPath();
-        resp.sendRedirect(path + "/index.jsp");
+        resp.sendRedirect(
+                UriBuilder
+                .fromPath(req.getContextPath())
+                .path(PublicResource.class)
+                .queryParam("error", "Please log in")
+                .build()
+                .toString()
+                );
     }
 }

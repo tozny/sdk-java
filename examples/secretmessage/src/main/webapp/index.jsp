@@ -16,14 +16,13 @@
     </c:if>
 
     <div id="tozny-login"></div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://api.tozny.com/interface/javascript/v2/jquery.tozny.js"></script>
     <script>
       $(document).ready(function () {
         $('#tozny-login').tozny({
           realm_key_id: 'sid_5647f50d6743e',
           debug: true,
-          form_action: '${pageContext.request.contextPath}/login',
+          form_action: '${pageContext.request.contextPath}/api/session',
           style: 'box'
         })
       })
