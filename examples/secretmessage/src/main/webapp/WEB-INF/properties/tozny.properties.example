@@ -8,10 +8,8 @@
 # for more information.
 #
 
-# Replace these values with your realm key, secret, and user
-# information from the Tozny admin console at https://admin.tozny.com
-# and rename this file to "test.properties".
+# Replace these values with your realm key and secret,
+# available via the Tozny admin console at https://admin.tozny.com,
+# and rename this file to "tozny.properties".
 realmKey = sid_1234567890abc
 realmSecret = 20349823049234809248039482034983498
-userId = sid_3439843948
-userEmail = foo@example.com
