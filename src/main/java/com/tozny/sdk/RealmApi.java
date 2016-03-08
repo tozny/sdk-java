@@ -1,31 +1,24 @@
 package com.tozny.sdk;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-
+import com.tozny.sdk.internal.ProtocolHelpers;
+import com.tozny.sdk.internal.ToznyProtocol;
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.Session;
 import com.tozny.sdk.realm.User;
 import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginResponse;
-import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginUrl;
+import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginRequest;
 import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeResponse;
-import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeUrl;
+import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeRequest;
 import com.tozny.sdk.realm.methods.user_exists.UserExistsResponse;
-import com.tozny.sdk.realm.methods.user_exists.UserExistsUrl;
+import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
+import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
+import com.tozny.sdk.realm.methods.user_add.UserAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
-import com.tozny.sdk.realm.methods.user_get.UserGetUrl;
+import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 
 /**
  * Main entry point to the Tozny API's Realm calls.
@@ -34,9 +27,9 @@ import com.tozny.sdk.realm.methods.user_get.UserGetUrl;
  * which can be obtained from the Tozny Admin Console (admin.tozny.com).
  */
 public class RealmApi {
-    public final RealmConfig config;
-    public final HttpRequestFactory requestFactory;
-    public final JsonFactory jsonFactory;
+
+    private final RealmConfig config;
+    private final ToznyProtocol protocol;
 
     /**
      * Builds a RealmApi instance.
@@ -44,19 +37,17 @@ public class RealmApi {
      * @param config the Realm's KeyID and Secret to use on all realm calls
      */
     public RealmApi(RealmConfig config) {
-        this(config, getDefaultRequestFactory(), getDefaultJsonFactory());
+        this(config, new ToznyProtocol(config));
     }
 
     /**
      * Builds a RealmApi instance
-     * @param config the Realm's KeyID and Secret to use on all realm calls
-     * @param requestFactory the Google HTTP Client request factory instance to make calls out to Tozny's API servers with.
-     * @param jsonFactory the Google HTTP Client JSON factory instance to use when constructing or maipulating JSON structures.
+     *
+     * @param toznyProtocol configured with customized settings
      */
-    public RealmApi(RealmConfig config, HttpRequestFactory requestFactory, JsonFactory jsonFactory) {
+    public RealmApi(RealmConfig config, ToznyProtocol protocol) {
         this.config = config;
-        this.requestFactory = requestFactory;
-        this.jsonFactory = jsonFactory;
+        this.protocol = protocol;
     }
 
     /**
@@ -68,13 +59,31 @@ public class RealmApi {
      */
     public boolean verifyLogin (String signedData, String signature) throws ToznyApiException {
         try {
-            return Protocol.checkSignature(this.config.realmSecret, signature, signedData);
+            return ProtocolHelpers.checkSignature(this.config.realmSecret, signature, signedData);
         } catch (InvalidKeyException e) {
             throw new ToznyApiException("While attempting to verify login", e);
         } catch (NoSuchAlgorithmException e) {
             throw new ToznyApiException("While attempting to verify login", e);
         }
+    }
 
+    /**
+     * Add this user to the given realm.
+     *
+     * @param defer wether to use deferred enrollment. Defaults to "false"
+     * @param metadata arbitrary key-value pairs; some keys have special
+     * signifigance, such as "tozny_email"
+     */
+    public UserAddResponse userAdd(
+            boolean deferred, Map<String,String> metadata) throws ToznyApiException {
+        UserAddRequest req = new UserAddRequest(deferred, metadata, null);
+        UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
+        if (resp.isError()) {
+            throw resp.getException();
+        }
+        else {
+            return resp;
+        }
     }
 
     /**
@@ -84,11 +93,8 @@ public class RealmApi {
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGet (String userId) throws ToznyApiException {
-        UserGetUrl url = new UserGetUrl(this.config, this.jsonFactory);
-        url.user_id = userId;
-        return rawCall(url, UserGetResponse.class).getUser();
+        return <User>dispatch(new UserGetRequest(user_id, null));
     }
-
 
     /**
      * Calls 'realm.user_get' to retrieve the user identified by the given email address.
@@ -97,9 +103,7 @@ public class RealmApi {
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGetByEmail (String email) throws ToznyApiException {
-        UserGetUrl url = new UserGetUrl(this.config, this.jsonFactory);
-        url.tozny_email = email;
-        return rawCall(url, UserGetResponse.class).getUser();
+        return <User>dispatch(new UserGetRequest(null, email));
     }
 
     /**
@@ -109,9 +113,8 @@ public class RealmApi {
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public boolean userExists(String userId) throws ToznyApiException {
-        UserExistsUrl url = new UserExistsUrl(this.config, this.jsonFactory);
-        url.user_id = userId;
-        return rawCall(url, UserExistsResponse.class).getUserExists();
+        UserExistsRequest req = new UserExistsRequest(userId, null);
+        return dispatchUserExists(req);
     }
 
     /**
@@ -121,9 +124,22 @@ public class RealmApi {
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public boolean userExistsByEmail(String email) throws ToznyApiException {
-        UserExistsUrl url = new UserExistsUrl(this.config, this.jsonFactory);
-        url.tozny_email = email;
-        return rawCall(url, UserExistsResponse.class).getUserExists();
+        UserExistsRequest req = new UserExistsRequest(null, email);
+        return dispatchUserExists(req);
+    }
+
+    private boolean dispatchUserExists(UserExistsRequest req) throws ToznyApiException {
+        ToznyApiResponse<Void> resp = protocol.<ToznyApiResponse<Void>>dispatch(req, ToznyApiResponse.class);
+        String ret = resp.getReturn();
+        if (ret.equals("true")) {
+            return true;
+        }
+        else if (ret.equals("false")) {
+            return false;
+        }
+        else {
+            throw resp.getException();
+        }
     }
 
     /**
@@ -134,8 +150,7 @@ public class RealmApi {
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public Session questionChallenge (String question) throws ToznyApiException {
-        QuestionChallengeUrl url = new QuestionChallengeUrl(this.config, this.jsonFactory, question);
-        return rawCall(url,  QuestionChallengeResponse.class).getChallengeSession();
+        return questionChallenge(question, null);
     }
 
     /**
@@ -147,9 +162,14 @@ public class RealmApi {
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public Session questionChallenge (String question, String userId) throws ToznyApiException {
-        QuestionChallengeUrl url = new QuestionChallengeUrl(this.config, this.jsonFactory, question);
-        url.user_id = userId;
-        return rawCall(url,  QuestionChallengeResponse.class).getChallengeSession();
+        QuestionChallengeRequest req = new QuestionChallengeRequest(question, userId);
+        Session response = protocol.dispatch(req, Session.class);
+        if (response.isError()) {
+            throw response.getException();
+        }
+        else {
+            return response;
+        }
     }
 
     /**
@@ -161,52 +181,28 @@ public class RealmApi {
      * @throws ToznyApiException  If the session or user does not exist, or if an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public boolean checkValidLogin (String userId, String sessionId) throws ToznyApiException {
-        CheckValidLoginUrl url = new CheckValidLoginUrl(this.config, this.jsonFactory, userId, sessionId);
-        return rawCall(url, CheckValidLoginResponse.class).isLoginValid();
-    }
-
-    /**
-     * Performs a raw call to the the given URL, after setting the accept header to 'application/json'.
-     * The Response is them passed to an instance of the given dataClass for marshaling into the result type.
-     *
-     * @param url The URL to call
-     * @param dataClass The response marshalling class.
-     * @param <T> A descendant of ToznyApiResponse, which will provide helpers for managing ToznyAPI errors.
-     * @return an instance of the given dataClass.
-     * @throws ToznyApiException if an I/O or protocol error occurs during the API call
-     */
-    public <T extends ToznyApiResponse> T rawCall (GenericUrl url, Class<T> dataClass) throws ToznyApiException {
-        T apiResponse;
-        try {
-            HttpRequest request = this.requestFactory.buildGetRequest(url);
-
-            HttpHeaders headers = request.getHeaders();
-            headers.setAccept("application/json");
-
-            apiResponse = request.execute().parseAs(dataClass);
-        } catch (IOException e) {
-            String message =  "While calling "+url+".";
-            throw new ToznyApiException(message,e);
+        CheckValidLoginRequest req = new CheckValidLoginRequest(userId, sessionId);
+        ToznyApiResponse<Void> resp =  protocol.<ToznyApiResponse<Void>>dispatch(req, ToznyApiResponse.class);
+        String ret = resp.getReturn();
+        if (ret.equals("true")) {
+            return true;
         }
-
-        if (apiResponse.isError()) throw apiResponse.getException();
-        else return apiResponse;
+        else if (ret.equals("false")) {
+            return false;
+        }
+        else {
+            throw resp.getException();
+        }
     }
 
-    // Default HTTP and JSON factories.
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-
-    private static HttpRequestFactory getDefaultRequestFactory() {
-        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-            @Override
-            public void initialize(HttpRequest request) {
-                request.setParser(new JsonObjectParser(JSON_FACTORY));
-            }
-        });
+    private <T> T dispatch(ToznyApiRequest req) throws ToznyApiException {
+        ToznyApiResponse<T> response = protocol.dispatch(req, ToznyApiResponse.class);
+        if (response.isError()) {
+            throw response.getException();
+        }
+        else {
+            return response.getResult();
+        }
     }
 
-    private static JsonFactory getDefaultJsonFactory() {
-        return JSON_FACTORY;
-    }
 }

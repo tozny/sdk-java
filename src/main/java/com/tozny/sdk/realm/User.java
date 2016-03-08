@@ -1,6 +1,6 @@
 package com.tozny.sdk.realm;
 
-import com.google.api.client.util.Key;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 import java.util.Map;
@@ -45,60 +45,96 @@ import java.util.Map;
  */
 public class User {
 
-    @Key
-    public String user_id;
+    @JsonProperty private String user_id;
+    @JsonProperty private Boolean blocked;
+    @JsonProperty private Long login_attempts;
+    @JsonProperty private String tmp_block_timestamp;
+    @JsonProperty private Integer tmp_block_attempts;
+    @JsonProperty private String status;
+    @JsonProperty private Date created;
+    @JsonProperty private Date modified;
+    @JsonProperty private Date last_login;
+    @JsonProperty private Long total_logins;
+    @JsonProperty private Long total_failed_logins;
+    @JsonProperty private Date last_failed_login;
+    @JsonProperty private Integer total_devices;
+    @JsonProperty private Map<String,String> meta;
+    @JsonProperty private String tozny_primary;
+    @JsonProperty private String tozny_secondary;
+    @JsonProperty private String tozny_username;
+    @JsonProperty private String tozny_email;
 
-    @Key
-    public Boolean blocked;
+    public String getUserId() {
+        return user_id;
+    }
 
-    @Key
-    public Long login_attempts;
+    public Boolean getBlocked() {
+        return blocked;
+    }
 
-    @Key
-    public String tmp_block_timestamp;
+    public Long getLoginAttempts() {
+        return login_attempts;
+    }
 
-    @Key
-    public Integer tmp_block_attempts;
+    public String getTmpBlockTimestamp() {
+        return tmp_block_timestamp;
+    }
 
-    @Key
-    public String status;
+    public Integer getTmpBlockAttempts() {
+        return tmp_block_attempts;
+    }
 
-    @Key
-    public Date created;
+    public String getStatus() {
+        return status;
+    }
 
-    @Key
-    public Date modified;
+    public Date getCreated() {
+        return created;
+    }
 
-    @Key
-    public Date last_login;
+    public Date getModified() {
+        return modified;
+    }
 
-    @Key
-    public Long total_logins;
+    public Date getLastLogin() {
+        return last_login;
+    }
 
-    @Key
-    public Long total_failed_logins;
+    public Long getTotalLogins() {
+        return total_logins;
+    }
 
-    @Key
-    public Date last_failed_login;
+    public Long getTotalFailedLogins() {
+        return total_failed_logins;
+    }
 
-    @Key
-    public Integer total_devices;
+    public Date getLastFailedLogin() {
+        return last_failed_login;
+    }
 
-    @Key
-    public Map<String,String> meta;
+    public Integer getTotalDevices() {
+        return total_devices;
+    }
 
-    @Key
-    public String tozny_primary;
+    public Map<String,String> getMeta() {
+        return meta;
+    }
 
-    @Key
-    public String tozny_secondary;
+    public String getToznyPrimary() {
+        return tozny_primary;
+    }
 
-    @Key
-    public String tozny_username;
+    public String getToznySecondary() {
+        return tozny_secondary;
+    }
 
-    @Key
-    public String tozny_email;
+    public String getToznyUsername() {
+        return tozny_username;
+    }
 
+    public String getToznyEmail() {
+        return tozny_email;
+    }
 
     @Override
     public String toString() {

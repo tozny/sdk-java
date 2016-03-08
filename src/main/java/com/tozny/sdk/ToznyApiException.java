@@ -1,5 +1,7 @@
 package com.tozny.sdk;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +15,7 @@ public class ToznyApiException extends RuntimeException {
     public final List<ToznyApiError> errors;
 
     /**
-     * A class that modeles a singl error reported by the Tozny API.
+     * A class that modeles a single error reported by the Tozny API.
      */
     public static class ToznyApiError {
         /**
@@ -30,7 +32,11 @@ public class ToznyApiException extends RuntimeException {
          */
         public final String location;
 
-        public ToznyApiError (int status_code, String error_message, String location) {
+        @JsonCreator
+        public ToznyApiError (
+                @JsonProperty int status_code,
+                @JsonProperty String error_message,
+                @JsonProperty String location) {
             this.error_message = error_message;
             this.status_code = status_code;
             this.location = location;

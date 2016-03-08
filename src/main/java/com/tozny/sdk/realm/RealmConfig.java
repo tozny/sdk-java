@@ -1,6 +1,5 @@
 package com.tozny.sdk.realm;
 
-import com.tozny.sdk.ToznyApiUrl;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
 
@@ -10,6 +9,8 @@ import com.tozny.sdk.realm.config.ToznyRealmSecret;
  * For more information on Tozny realm key managment, please see: (http://tozny.com/documentation/admin-console/key-management/)
  */
 public class RealmConfig {
+
+    public static final String TOZNY_PRODUCTION_API_URL = "https://api.tozny.com/";
 
     public final String apiUrl;
     public final ToznyRealmKeyId realmKeyId;
@@ -22,8 +23,8 @@ public class RealmConfig {
      * @param realmKeyId key ID of realm to authenticate to
      * @param realmSecret secret of realm to authenticate to
      */
-    public RealmConfig(ToznyRealmKeyId realmKeyId,  ToznyRealmSecret realmSecret) {
-        this(ToznyApiUrl.TOZNY_PRODUCTION_API_URL, realmKeyId,realmSecret);
+    public RealmConfig(ToznyRealmKeyId realmKeyId, ToznyRealmSecret realmSecret) {
+        this(TOZNY_PRODUCTION_API_URL, realmKeyId, realmSecret);
     }
 
     /**

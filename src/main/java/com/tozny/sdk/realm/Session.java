@@ -1,7 +1,9 @@
 package com.tozny.sdk.realm;
 
-import com.google.api.client.util.Key;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 
+import java.lang.Void;
 import java.net.URL;
 import java.util.Date;
 
@@ -25,28 +27,47 @@ import java.util.Date;
  * }
  * </pre>
  */
-public class Session {
+public class Session extends ToznyApiResponse<Void> {
 
-    @Key
-    public String challenge;
+    @JsonProperty private String challenge;
+    @JsonProperty private String realm_key_id;
+    @JsonProperty private String session_id;
+    @JsonProperty private URL qr_url;
+    @JsonProperty private String mobile_url;
+    @JsonProperty private String presence;
+    @JsonProperty private Date created_at;
 
-    @Key
-    public String realm_key_id;
+    public String getChallenge() {
+        return challenge;
+    }
 
-    @Key
-    public String session_id;
+    public ToznyRealmKeyId getRealmKeyId() {
+        return new ToznyRealmKeyId(realm_key_id);
+    }
 
-    @Key
-    public URL qr_url;
+    public String getSessionId() {
+        return session_id;
+    }
 
-    @Key
-    public String mobile_url;
+    public URL getQrUrl() {
+        return qr_url;
+    }
 
-    @Key
-    public String presence;
+    /**
+     * `mobile_url` is given as `String` instead of `URL` because the custom
+     * scheme confuses Java URL parsing.
+     */
+    public String getMobileUrl() {
+        return mobile_url;
+    }
 
-    @Key
-    public Date created_at;
+    public String getPresence() {
+        return presence;
+    }
+
+    public Date getCreatedAt() {
+        return created_at;
+    }
 
     @Override
     public String toString() {
@@ -60,4 +81,5 @@ public class Session {
                 ", created_at=" + created_at +
                 '}';
     }
+
 }

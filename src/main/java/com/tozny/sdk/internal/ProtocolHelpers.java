@@ -1,4 +1,4 @@
-package com.tozny.sdk;
+package com.tozny.sdk.internal;
 
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
 import org.apache.commons.codec.binary.Base64;
@@ -15,7 +15,7 @@ import java.security.SecureRandom;
  * A Set of static helper functions that performs most of the performance or cryptographically sensitive functions needed
  * while interacting with the Tozny API.
  */
-public class Protocol {
+public class ProtocolHelpers {
 
     public static final String RANDOM_ALGORITHM = "SHA1PRNG";
     public static final Charset utf8 = Charset.forName("UTF-8");
@@ -45,9 +45,11 @@ public class Protocol {
      * @return URL safe Base64 encoding of the given bytes.
      */
     public static String base64UrlEncode (byte[] bytes) {
-        // Base64 in commons codec v.1.3 doesn't have builtin url-safe base64 encoding
-        // see: http://en.wikipedia.org/wiki/Base64#URL_applications
-        return new String(Base64.encodeBase64(bytes)).replace('+','-').replace('/','_').replace("=","");
+        return new Base64(true).encodeToString(bytes);
+    }
+
+    public static byte[] base64UrlDecode (String encoded) {
+        return Base64.decodeBase64(encoded);
     }
 
     /**
