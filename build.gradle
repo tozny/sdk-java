@@ -5,28 +5,16 @@
 // All Rights Reserved.
 //
 
-allprojects {
-  apply plugin: 'java'
-
-  repositories {
-    maven { url "http://repo.maven.apache.org/maven2" }
-  }
-}
-
+apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-group = 'com.tozny.sdk'
-
-def baseVersion = "2.0"
-def buildNumber = System.getenv("BUILD_NUMBER")
-
-if (buildNumber != null) {
-  version = "$baseVersion.$buildNumber"
-} else {
-  version = "$baseVersion-SNAPSHOT"
-}
-
+group = 'com.github.tozny'
 description = 'tozny-sdk'
+
+repositories {
+  mavenCentral()
+}
 
 dependencies {
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations',  version: '2.+'
@@ -37,6 +25,35 @@ dependencies {
   testCompile group: 'junit', name: 'junit', version: '4.12'
 
   testRuntime files('test.properties')
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives sourcesJar
+  archives javadocJar
+}
+
+install {
+  repositories.mavenInstaller {
+    pom.project {
+      licenses {
+        license {
+          name 'The Apache Software License, Version 2.0'
+          url 'http://www.apache.org/licenses/LICENSE-2.0'
+          distribution 'repo'
+        }
+      }
+    }
+  }
 }
 
 test {
