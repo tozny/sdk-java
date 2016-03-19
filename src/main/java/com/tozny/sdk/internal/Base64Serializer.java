@@ -17,7 +17,7 @@ public class Base64Serializer extends JsonSerializer<Object> {
 
     public void serialize(Object value, JsonGenerator gen, SerializerProvider provider)
         throws IOException, JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper(gen.getCodec().getJsonFactory(), provider, null);
+        ObjectMapper mapper = new ObjectMapper();
         byte[] json = mapper.writeValueAsBytes(value);
         gen.writeString(ProtocolHelpers.base64UrlEncode(json));
     }

@@ -3,6 +3,7 @@ package com.tozny.sdk.realm.methods.user_add;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiRequest;
 
+import java.util.Collections;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -22,8 +23,15 @@ public class UserAddRequest implements ToznyApiRequest {
             @Nullable Map<String,String> extra_fields,
             @Nullable String pub_key) {
         this.defer = defer ? "true" : "false";
-        this.user_id = user_id;
-        this.tozny_email = tozny_email;
+        this.extra_fields = extra_fields;
+        this.pub_key = pub_key;
+    }
+
+    public UserAddRequest(
+            boolean defer,
+            String tozny_email,
+            @Nullable String pub_key) {
+        this(defer, Collections.singletonMap("tozny_email", tozny_email), pub_key);
     }
 
     public String getMethod() {

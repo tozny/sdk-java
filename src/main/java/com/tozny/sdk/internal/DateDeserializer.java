@@ -19,8 +19,7 @@ public class DateDeserializer extends JsonDeserializer<Date> {
                 created = new Date(Long.parseLong((String) value) * 1000);
             }
             catch (NumberFormatException e) {
-                throw new JsonProcessingException();
-                throw new ToznyApiException("While parsing created value: " + value, e);
+                throw new JsonProcessingException(e);
             }
         }
         return created;

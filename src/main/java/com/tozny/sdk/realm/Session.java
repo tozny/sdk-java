@@ -1,6 +1,7 @@
 package com.tozny.sdk.realm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tozny.sdk.ToznyApiResponse;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 
 import java.lang.Void;

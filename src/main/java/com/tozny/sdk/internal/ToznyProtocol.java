@@ -1,8 +1,12 @@
 package com.tozny.sdk.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.tozny.sdk.ToznyApiException;
@@ -10,11 +14,20 @@ import com.tozny.sdk.ToznyApiResponse;
 import com.tozny.sdk.ToznyApiRequest;
 import com.tozny.sdk.realm.RealmConfig;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * Low-level methods for constructing and dispatching API requests.
@@ -23,22 +36,23 @@ public class ToznyProtocol {
 
     private final RealmConfig realmConfig;
     private final ObjectMapper mapper;
-    private final OkHttpClient client;
+    private final Call.Factory client;
 
     /**
      * @param realmConfig provides realm credentials and API URL.
-     * @param httpClient the OkHttpClient instance to make calls out to Tozny's API servers with.
+     * @param httpClient the OkHttpClient instance to make calls out to Tozny's API servers with (or another type that implements `Call.Factory`).
      * @param objectMapper the Jackson ObjectMapper instance to use when constructing or manipulating JSON structures.
      */
 
-    public ToznyProtocol(RealmConfig realmConfig, OkHttpClient httpClient, ObjectMapper objectMapper) {
+    public ToznyProtocol(RealmConfig realmConfig, Call.Factory httpClient, ObjectMapper objectMapper) {
         this.realmConfig = realmConfig;
         this.mapper = objectMapper;
         this.client = httpClient;
+        this.mapper.registerModule(getJacksonModule());
     }
 
     public ToznyProtocol(RealmConfig realmConfig) {
-        this(realmConfig, getDefaultHttpClient(), getDefaultObjectMapper());
+        this(realmConfig, getDefaultHttpClient(), new ObjectMapper());
     }
 
     /**
@@ -52,17 +66,28 @@ public class ToznyProtocol {
      * @return an instance of the given dataClass.
      * @throws ToznyApiException if an I/O or protocol error occurs during the API call
      */
-    public <T extends ToznyApiResponse> T dispatch(
+    public <T extends ToznyApiResponse<?>> T dispatch(
             ToznyApiRequest req,
             Class<T> dataClass) throws ToznyApiException {
-        RequestMeta meta = new RequestMeta(
-                ProtocolHelpers.getNonce(),
-                ProtocolHelpers.getExpires(),
-                realmConfig.realmKeyId.value
-                );
-        byte[] json = toJson(req, meta);
-        String signed_data = ProtocolHelpers.base64UrlEncode(json);
-        String signature   = ProtocolHelpers.sign(realmConfig.realmSecret, signed_data);
+
+        String signedData;
+        String signature;
+        try {
+            RequestMeta meta = new RequestMeta(
+                    ProtocolHelpers.getNonce(),
+                    ProtocolHelpers.getExpires(),
+                    realmConfig.realmKeyId.value
+                    );
+            byte[] json = toJson(req, meta);
+            signedData = ProtocolHelpers.base64UrlEncode(json);
+            signature  = ProtocolHelpers.sign(realmConfig.realmSecret, signedData);
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new ToznyApiException("SHA1PRNG algorithm is not available.", e);
+        }
+        catch (InvalidKeyException e) {
+            throw new ToznyApiException("There was a problem initializing HmacSHA256.", e);
+        }
 
         RequestBody params = new FormBody.Builder()
             .add("signed_data", signedData)
@@ -98,7 +123,11 @@ public class ToznyProtocol {
         try {
             apiResponse = mapper.readValue(response.body().byteStream(), dataClass);
         }
-        catch (JsonMappingException e) {
+        catch (JsonProcessingException e) {
+            String message = "While calling "+req+".";
+            throw new ToznyApiException(message, e);
+        }
+        catch (IOException e) {
             String message = "While calling "+req+".";
             throw new ToznyApiException(message, e);
         }
@@ -111,18 +140,28 @@ public class ToznyProtocol {
         }
     }
 
-    private byte[] toJson(ToznyApiRequest req, RequestMeta meta) {
+    private byte[] toJson(ToznyApiRequest req, RequestMeta meta) throws ToznyApiException {
         ObjectNode merged = mergeJson(req, meta);
-        return mapper.writeValueAsBytes(merged);
+        try {
+            return mapper.writeValueAsBytes(merged);
+        }
+        catch (JsonProcessingException e) {
+            String message = "While calling "+req+".";
+            throw new ToznyApiException(message, e);
+        }
     }
 
     private ObjectNode mergeJson(Object target, Object source) {
         ObjectNode mainNode = mapper.valueToTree(target);
         ObjectNode updateNode = mapper.valueToTree(source);
-        for (String fieldName : updateNode.fieldNames()) {
+        Iterator<String> fieldNames = updateNode.fieldNames();
+
+        while (fieldNames.hasNext()) {
+            String fieldName = fieldNames.next();
             JsonNode value = updateNode.get(fieldName);
             mainNode.put(fieldName, value);
         }
+
         return mainNode;
     }
 
@@ -138,19 +177,15 @@ public class ToznyProtocol {
         }
     }
 
-    private static OkHttpClient getDefaultHttpClient() {
+    private static Call.Factory getDefaultHttpClient() {
         return new OkHttpClient();
     }
 
-    private static ObjectMapper getDefaultObjectMapper() {
+    private static Module getJacksonModule() {
         SimpleModule toznyModule = new SimpleModule("ToznyModule", new Version(1, 0, 0, null));
-        toznyModule.addDeserializer(new DateDeserializer());
-        toznyModule.addSerializer(new Base64Serializer());
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.register(toznyModule);
-
-        return mapper;
+        toznyModule.addDeserializer(Date.class, new DateDeserializer());
+        toznyModule.addSerializer(Map.class, new Base64Serializer());
+        return toznyModule;
     }
 
 }

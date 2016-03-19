@@ -1,10 +1,10 @@
 package com.tozny.sdk.realm.methods.user_add;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiException;
 import com.tozny.sdk.ToznyApiResponse;
 import com.tozny.sdk.realm.User;
 
-import java.lang.Void;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

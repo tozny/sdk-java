@@ -9,15 +9,11 @@ import com.tozny.sdk.internal.ToznyProtocol;
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.Session;
 import com.tozny.sdk.realm.User;
-import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginResponse;
 import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginRequest;
-import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeResponse;
 import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeRequest;
-import com.tozny.sdk.realm.methods.user_exists.UserExistsResponse;
 import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
 import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
 import com.tozny.sdk.realm.methods.user_add.UserAddRequest;
-import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 
 /**
@@ -87,13 +83,32 @@ public class RealmApi {
     }
 
     /**
+     * Add this user to the given realm and associate with the given email
+     * address.
+     *
+     * @param defer wether to use deferred enrollment. Defaults to "false"
+     * @param email address to associate with user
+     */
+    public UserAddResponse userAddWithEmail(
+            boolean deferred, String email) throws ToznyApiException {
+        UserAddRequest req = new UserAddRequest(deferred, email, null);
+        UserAddResponse resp = protocol.dispatch(req, UserAddResponse.class);
+        if (resp.isError()) {
+            throw resp.getException();
+        }
+        else {
+            return resp;
+        }
+    }
+
+    /**
      * Calls 'realm.user_get' to retrieve the user identified by the given userId.
      * @param userId the id of the user to retrieve.
      * @return an instance of <code>User</code>
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGet (String userId) throws ToznyApiException {
-        return <User>dispatch(new UserGetRequest(user_id, null));
+        return this.<User>dispatch(new UserGetRequest(userId, null));
     }
 
     /**
@@ -103,7 +118,7 @@ public class RealmApi {
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGetByEmail (String email) throws ToznyApiException {
-        return <User>dispatch(new UserGetRequest(null, email));
+        return this.<User>dispatch(new UserGetRequest(null, email));
     }
 
     /**
@@ -196,7 +211,7 @@ public class RealmApi {
     }
 
     private <T> T dispatch(ToznyApiRequest req) throws ToznyApiException {
-        ToznyApiResponse<T> response = protocol.dispatch(req, ToznyApiResponse.class);
+        ToznyApiResponse<T> response = protocol.<ToznyApiResponse<T>>dispatch(req, ToznyApiResponse.class);
         if (response.isError()) {
             throw response.getException();
         }
