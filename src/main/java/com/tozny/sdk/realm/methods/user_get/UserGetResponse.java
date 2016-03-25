@@ -17,7 +17,7 @@ public class UserGetResponse extends ToznyApiResponse<User> {
             @JsonProperty("count")   Integer count,
             @JsonProperty("total")   Integer total,
             @JsonProperty("errors")  List<ToznyApiError> errors) {
-        super(ret, null, null, count, total, errors);
+        super(ret, null, results, count, total, errors);
     }
 
 }
