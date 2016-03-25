@@ -2,3 +2,5 @@
 build
 *.swp
 /test.properties
+.idea/
+*.iml
