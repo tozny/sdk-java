@@ -2,6 +2,7 @@ package com.tozny.sdk.internal;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -12,17 +13,24 @@ public class DateDeserializer extends JsonDeserializer<Date> {
 
     public Date deserialize(JsonParser jp, DeserializationContext context)
         throws IOException, JsonProcessingException {
-        String value = jp.nextTextValue();
-        Date created = null;
-        if (value != null) {
+        long timestamp;
+        JsonToken token = jp.getCurrentToken();
+        if (token.equals(JsonToken.VALUE_NUMBER_INT)) {
+            timestamp = jp.getLongValue();
+        }
+        else if (token.equals(JsonToken.VALUE_STRING)) {
+            String value = jp.getText();
             try {
-                created = new Date(Long.parseLong((String) value) * 1000);
+                timestamp = Long.parseLong(value);
             }
             catch (NumberFormatException e) {
                 throw context.instantiationException(Long.class, e);
             }
         }
-        return created;
+        else {
+            throw context.wrongTokenException(jp, token, "While parsing Date value, expected a number or a string containing a number.");
+        }
+        return new Date(timestamp * 1000);
     }
 
 }
