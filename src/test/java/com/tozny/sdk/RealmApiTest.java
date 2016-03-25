@@ -32,7 +32,9 @@ public class RealmApiTest {
     @Before
     public void init() throws Exception {
         String testPropertiesFile = System.getProperty("testProperties");
-        assertNotNull(testPropertiesFile);
+        if (testPropertiesFile == null) {
+            testPropertiesFile = "test.properties";
+        }
 
         InputStream is = new FileInputStream(testPropertiesFile);
         Properties props = new Properties();
