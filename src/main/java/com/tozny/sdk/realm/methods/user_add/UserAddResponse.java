@@ -9,9 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A GenericJson instance intended for marshaling an instance of User.
- */
 public class UserAddResponse extends ToznyApiResponse<Void> {
 
     @JsonProperty private String username;

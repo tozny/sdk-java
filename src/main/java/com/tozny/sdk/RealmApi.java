@@ -15,6 +15,7 @@ import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
 import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
 import com.tozny.sdk.realm.methods.user_add.UserAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
+import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
 
 /**
  * Main entry point to the Tozny API's Realm calls.
@@ -92,7 +93,7 @@ public class RealmApi {
     public UserAddResponse userAddWithEmail(
             boolean deferred, String email) throws ToznyApiException {
         UserAddRequest req = new UserAddRequest(deferred, email, null);
-        UserAddResponse resp = protocol.dispatch(req, UserAddResponse.class);
+        UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
         if (resp.isError()) {
             throw resp.getException();
         }
@@ -108,7 +109,14 @@ public class RealmApi {
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGet (String userId) throws ToznyApiException {
-        return this.<User>dispatch(new UserGetRequest(userId, null));
+        UserGetResponse resp = protocol.<UserGetResponse>dispatch(
+                new UserGetRequest(userId, null), UserGetResponse.class);
+        if (resp.isError()) {
+            throw resp.getException();
+        }
+        else {
+            return resp.getResult();
+        }
     }
 
     /**
@@ -118,7 +126,14 @@ public class RealmApi {
      * @throws ToznyApiException If a user does not exist, or if an error occurs either in communicating, or marshaling a <code>User</code> response from the Tozny API.
      */
     public User userGetByEmail (String email) throws ToznyApiException {
-        return this.<User>dispatch(new UserGetRequest(null, email));
+        UserGetResponse resp = protocol.<UserGetResponse>dispatch(
+                new UserGetRequest(null, email), UserGetResponse.class);
+        if (resp.isError()) {
+            throw resp.getException();
+        }
+        else {
+            return resp.getResult();
+        }
     }
 
     /**
@@ -144,7 +159,8 @@ public class RealmApi {
     }
 
     private boolean dispatchUserExists(UserExistsRequest req) throws ToznyApiException {
-        ToznyApiResponse<Void> resp = protocol.<ToznyApiResponse<Void>>dispatch(req, ToznyApiResponse.class);
+        ToznyApiResponse resp = protocol.<ToznyApiResponse>dispatch(
+                req, ToznyApiResponse.class);
         String ret = resp.getReturn();
         if (ret.equals("true")) {
             return true;
@@ -197,7 +213,8 @@ public class RealmApi {
      */
     public boolean checkValidLogin (String userId, String sessionId) throws ToznyApiException {
         CheckValidLoginRequest req = new CheckValidLoginRequest(userId, sessionId);
-        ToznyApiResponse<Void> resp =  protocol.<ToznyApiResponse<Void>>dispatch(req, ToznyApiResponse.class);
+        ToznyApiResponse resp = protocol.<ToznyApiResponse>dispatch(
+                req, ToznyApiResponse.class);
         String ret = resp.getReturn();
         if (ret.equals("true")) {
             return true;
@@ -207,16 +224,6 @@ public class RealmApi {
         }
         else {
             throw resp.getException();
-        }
-    }
-
-    private <T> T dispatch(ToznyApiRequest req) throws ToznyApiException {
-        ToznyApiResponse<T> response = protocol.<ToznyApiResponse<T>>dispatch(req, ToznyApiResponse.class);
-        if (response.isError()) {
-            throw response.getException();
-        }
-        else {
-            return response.getResult();
         }
     }
 
