@@ -54,9 +54,9 @@ public class RealmApiTest {
     @Test
     public void testUserGet() throws IOException {
         User user = this.realmApi.userGet(this.userId);
-        assertEquals(this.userEmail, user.meta.get("email"));
+        assertEquals(this.userEmail, user.getMeta().get("email"));
         user = this.realmApi.userGetByEmail(this.userEmail);
-        assertEquals(this.userId, user.user_id);
+        assertEquals(this.userId, user.getUserId());
     }
 
     @Test
@@ -71,13 +71,13 @@ public class RealmApiTest {
     public void testQuestionChallenge() throws IOException {
         Session session = this.realmApi.questionChallenge("Do you like Java?");
 
-        assertNotNull(session.challenge);
-        assertNotNull(session.realm_key_id);
-        assertNotNull(session.session_id);
-        assertNotNull(session.qr_url);
-        assertNotNull(session.mobile_url);
-        assertNotNull(session.presence);
-        assertNotNull(session.created_at);
+        assertNotNull(session.getChallenge());
+        assertNotNull(session.getRealmKeyId());
+        assertNotNull(session.getSessionId());
+        assertNotNull(session.getQrUrl());
+        assertNotNull(session.getMobileUrl());
+        assertNotNull(session.getPresence());
+        assertNotNull(session.getCreatedAt());
     }
 
     @Test
