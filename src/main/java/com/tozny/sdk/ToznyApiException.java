@@ -34,9 +34,9 @@ public class ToznyApiException extends RuntimeException {
 
         @JsonCreator
         public ToznyApiError (
-                @JsonProperty int status_code,
-                @JsonProperty String error_message,
-                @JsonProperty String location) {
+                @JsonProperty("status_code")   int status_code,
+                @JsonProperty("error_message") String error_message,
+                @JsonProperty("location")      String location) {
             this.error_message = error_message;
             this.status_code = status_code;
             this.location = location;

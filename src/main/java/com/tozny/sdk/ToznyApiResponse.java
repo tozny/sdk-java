@@ -1,5 +1,6 @@
 package com.tozny.sdk;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiException.ToznyApiError;
 
@@ -14,15 +15,31 @@ import javax.annotation.Nullable;
  */
 public class ToznyApiResponse<T> {
 
-    @JsonProperty("return") private String ret;
+    private final String ret;
 
     // Responses include either a `result` or `results` field.
-    @JsonProperty private T result;
-    @JsonProperty private T results;
+    private final T result;
+    private final T results;
 
-    @JsonProperty private Integer count;
-    @JsonProperty private Integer total;
-    @JsonProperty private List<ToznyApiError> errors;
+    private final Integer count;
+    private final Integer total;
+    private final List<ToznyApiError> errors;
+
+    @JsonCreator
+    public ToznyApiResponse(
+            @JsonProperty("return")  String ret,
+            @JsonProperty("result")  T result,
+            @JsonProperty("results") T results,
+            @JsonProperty("count")   Integer count,
+            @JsonProperty("total")   Integer total,
+            @JsonProperty("errors")  List<ToznyApiError> errors) {
+        this.ret = ret;
+        this.result = result;
+        this.results = results;
+        this.count = count;
+        this.total = total;
+        this.errors = errors;
+    }
 
     /**
      * Tozny response always contains a 'return' field, either 'ok' or 'error'

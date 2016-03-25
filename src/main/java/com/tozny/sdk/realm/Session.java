@@ -1,12 +1,15 @@
 package com.tozny.sdk.realm;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tozny.sdk.ToznyApiException.ToznyApiError;
 import com.tozny.sdk.ToznyApiResponse;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 
 import java.lang.Void;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Holds the Tozny API response for a Session challenge.
@@ -30,13 +33,38 @@ import java.util.Date;
  */
 public class Session extends ToznyApiResponse<Void> {
 
-    @JsonProperty private String challenge;
-    @JsonProperty private String realm_key_id;
-    @JsonProperty private String session_id;
-    @JsonProperty private URL qr_url;
-    @JsonProperty private String mobile_url;
-    @JsonProperty private String presence;
-    @JsonProperty private Date created_at;
+    private final String challenge;
+    private final String realm_key_id;
+    private final String session_id;
+    private final URL qr_url;
+    private final String mobile_url;
+    private final String presence;
+    private final Date created_at;
+
+    @JsonCreator
+    public Session(
+            @JsonProperty("return")  String ret,
+            @JsonProperty("count")   Integer count,
+            @JsonProperty("total")   Integer total,
+            @JsonProperty("errors")  List<ToznyApiError> errors,
+
+            @JsonProperty("challenge")    String challenge,
+            @JsonProperty("realm_key_id") String realm_key_id,
+            @JsonProperty("session_id")   String session_id,
+            @JsonProperty("qr_url")       URL qr_url,
+            @JsonProperty("mobile_url")   String mobile_url,
+            @JsonProperty("presence")     String presence,
+            @JsonProperty("created_at")   Date created_at) {
+        super(ret, null, null, count, total, errors);
+
+        this.challenge = challenge;
+        this.realm_key_id = realm_key_id;
+        this.session_id = session_id;
+        this.qr_url = qr_url;
+        this.mobile_url = mobile_url;
+        this.presence = presence;
+        this.created_at = created_at;
+    }
 
     public String getChallenge() {
         return challenge;
