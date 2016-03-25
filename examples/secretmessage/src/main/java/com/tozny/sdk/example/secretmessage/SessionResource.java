@@ -10,10 +10,10 @@
 
 package com.tozny.sdk.example.secretmessage;
 
-import com.google.api.client.util.Base64;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.tozny.sdk.RealmApi;
+import com.tozny.sdk.internal.ProtocolHelpers;
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
@@ -106,7 +106,7 @@ public class SessionResource {
     }
 
     private <T> T parseSignedData(String signedData, Class<T> klass) throws IOException {
-        String json = new String(Base64.decodeBase64(signedData));
+        String json = new String(ProtocolHelpers.base64UrlDecode(signedData));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, klass);
     }

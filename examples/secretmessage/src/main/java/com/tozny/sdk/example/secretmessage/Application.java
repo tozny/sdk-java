@@ -30,15 +30,16 @@ public class Application extends ResourceConfig {
 
     public Application(@Context ServletContext context) throws IOException {
         setupTemplateEngine(context, "templates");
-        RealmApi realmApi = getRealmApi(context);
+        RealmConfig realmConfig = getRealmConfig(context);
+        RealmApi realmApi = new RealmApi(realmConfig);
         String contextPath = context.getContextPath();
 
         register(new SessionResource(contextPath, realmApi));
-        register(new PublicResource(contextPath, realmApi.config.realmKeyId));
+        register(new PublicResource(contextPath, realmConfig.realmKeyId));
         register(new ProtectedResource(contextPath));
     }
 
-    private RealmApi getRealmApi(ServletContext context) throws IOException {
+    private RealmConfig getRealmConfig(ServletContext context) throws IOException {
         // Load realm configuration from a properties file.
         Properties prop = new Properties();
         InputStream in = context.getResourceAsStream("/WEB-INF/properties/tozny.properties");
@@ -55,8 +56,7 @@ public class Application extends ResourceConfig {
         }
         ToznyRealmKeyId realmKey = new ToznyRealmKeyId(prop.getProperty("realmKey"));
         ToznyRealmSecret realmSecret = new ToznyRealmSecret(prop.getProperty("realmSecret"));
-        RealmConfig realmConfig = new RealmConfig(realmKey, realmSecret);
-        return new RealmApi(realmConfig);
+        return new RealmConfig(realmKey, realmSecret);
     }
 
     private void setupTemplateEngine(ServletContext context, String basePath) {
