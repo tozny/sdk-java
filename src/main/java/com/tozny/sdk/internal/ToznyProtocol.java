@@ -159,7 +159,7 @@ public class ToznyProtocol {
         while (fieldNames.hasNext()) {
             String fieldName = fieldNames.next();
             JsonNode value = updateNode.get(fieldName);
-            mainNode.put(fieldName, value);
+            mainNode.set(fieldName, value);
         }
 
         return mainNode;
@@ -182,7 +182,8 @@ public class ToznyProtocol {
     }
 
     private static Module getJacksonModule() {
-        SimpleModule toznyModule = new SimpleModule("ToznyModule", new Version(1, 0, 0, null));
+        Version version = new Version(1, 0, 0, null, "com.github.tozny", "tozny-sdk");
+        SimpleModule toznyModule = new SimpleModule("ToznyModule", version);
         toznyModule.addDeserializer(Date.class, new DateDeserializer());
         toznyModule.addSerializer(Map.class, new Base64Serializer());
         return toznyModule;
