@@ -42,9 +42,9 @@ public class RealmApi {
      *
      * @param toznyProtocol configured with customized settings
      */
-    public RealmApi(RealmConfig config, ToznyProtocol protocol) {
+    public RealmApi(RealmConfig config, ToznyProtocol toznyProtocol) {
         this.config = config;
-        this.protocol = protocol;
+        this.protocol = toznyProtocol;
     }
 
     /**
@@ -72,8 +72,8 @@ public class RealmApi {
      * signifigance, such as "tozny_email"
      */
     public UserAddResponse userAdd(
-            boolean deferred, Map<String,String> metadata) throws ToznyApiException {
-        UserAddRequest req = new UserAddRequest(deferred, metadata, null);
+            boolean defer, Map<String,String> metadata) throws ToznyApiException {
+        UserAddRequest req = new UserAddRequest(defer, metadata, null);
         UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
         if (resp.isError()) {
             throw resp.getException();
@@ -91,8 +91,8 @@ public class RealmApi {
      * @param email address to associate with user
      */
     public UserAddResponse userAddWithEmail(
-            boolean deferred, String email) throws ToznyApiException {
-        UserAddRequest req = new UserAddRequest(deferred, email, null);
+            boolean defer, String email) throws ToznyApiException {
+        UserAddRequest req = new UserAddRequest(defer, email, null);
         UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
         if (resp.isError()) {
             throw resp.getException();

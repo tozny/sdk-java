@@ -19,7 +19,7 @@ public class DateDeserializer extends JsonDeserializer<Date> {
                 created = new Date(Long.parseLong((String) value) * 1000);
             }
             catch (NumberFormatException e) {
-                throw new JsonProcessingException(e);
+                throw context.instantiationException(Long.class, e);
             }
         }
         return created;
