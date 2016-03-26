@@ -11,6 +11,10 @@ Library interface to the [Tozny][] authentication service. Use this Library to:
 
 [![Release](https://jitpack.io/v/tozny/sdk-java.svg)](https://jitpack.io/#tozny/sdk-java)
 
+## API Documentation
+
+https://jitpack.io/com/github/tozny/sdk-java/2.0.0/javadoc/
+
 ## Installing
 
 The SDK can be installed via a Maven artifact, via the JitPack repository.
@@ -43,7 +47,9 @@ RealmApi realm = new RealmApi(config);
 Realm key id and secret are found in the realm key management section in the Tozny admin dashboard.
 
 `RealmApi` exposes a number of methods interact with your realm. Many of these
-translate to HTTP calls to the Tozny API.
+translate to HTTP calls to the Tozny API. For details, see the [API documentation][].
+
+[API documentation]: https://jitpack.io/com/github/tozny/sdk-java/2.0.0/javadoc/
 
 For a working example of SDK use, see the [secretmessage][] example app. In
 particular, the [`SessionResource`][SessionResource] class demonstrates how to
