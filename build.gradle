@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations',  version: '2.+'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind',     version: '2.+'
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations',  version: '[2.4,3.0['
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind',     version: '[2.4,3.0['
   compile group: 'com.squareup.okhttp3',       name: 'okhttp',               version: '3.+'
   compile group: 'com.google.code.findbugs',   name: 'jsr305',               version: '+'
   compile group: 'commons-codec',              name: 'commons-codec',        version: '1.+'

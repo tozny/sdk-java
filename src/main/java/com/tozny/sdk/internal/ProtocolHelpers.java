@@ -45,7 +45,7 @@ public class ProtocolHelpers {
      * @return URL safe Base64 encoding of the given bytes.
      */
     public static String base64UrlEncode (byte[] bytes) {
-        return new Base64(true).encodeToString(bytes);
+        return new Base64(9999, "".getBytes(), true).encodeToString(bytes);
     }
 
     public static byte[] base64UrlDecode (String encoded) {
