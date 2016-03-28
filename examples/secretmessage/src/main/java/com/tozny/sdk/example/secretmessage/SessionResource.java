@@ -86,7 +86,7 @@ public class SessionResource {
                         .build())
                 .build();
         } else {
-            return Response.noContent().build();
+            return notAuthorized();
         }
     }
 
@@ -119,6 +119,12 @@ public class SessionResource {
             public String getReasonPhrase() { return "400 Bad Request"; }
             public int getStatusCode() { return 400; }
         };
+    }
+
+    private Response notAuthorized() {
+        return Response
+            .status(Response.Status.UNAUTHORIZED)
+            .build();
     }
 
 }
