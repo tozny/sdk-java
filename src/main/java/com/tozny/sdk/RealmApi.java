@@ -14,6 +14,8 @@ import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeRequest;
 import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
 import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
 import com.tozny.sdk.realm.methods.user_add.UserAddRequest;
+import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddResponse;
+import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
 
@@ -87,13 +89,33 @@ public class RealmApi {
      * Add this user to the given realm and associate with the given email
      * address.
      *
-     * @param defer wether to use deferred enrollment. Defaults to "false"
+     * @param defer wether to use deferred enrollment.
      * @param email address to associate with user
      */
     public UserAddResponse userAddWithEmail(
             boolean defer, String email) throws ToznyApiException {
         UserAddRequest req = new UserAddRequest(defer, email, null);
         UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
+        if (resp.isError()) {
+            throw resp.getException();
+        }
+        else {
+            return resp;
+        }
+    }
+
+    /**
+     * Initiate process of registering a new authentication device for a given
+     * user. The response includes a secret enrollment URL, that the user can
+     * activate on the new device to finalize registration.
+     *
+     * @param userId of the user account to add a device to
+     * @return an instance of <code>UserDeviceAddResponse</code>
+     * @throws ToznyApiException If the user does not exist, or if  an error occurs either in communicating, or marshaling a <code>UserDeviceAddResponse</code> response from the Tozny API.
+     */
+    public UserDeviceAddResponse userDeviceAdd(String userId) throws ToznyApiException {
+        UserDeviceAddRequest req = new UserDeviceAddRequest(userId);
+        UserDeviceAddResponse resp = protocol.<UserDeviceAddResponse>dispatch(req, UserDeviceAddResponse.class);
         if (resp.isError()) {
             throw resp.getException();
         }

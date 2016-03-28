@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * Collects request parameters for invoking the "realm.user_get" method.
+ * Collects request parameters for invoking the "realm.user_device_add" method.
  * Requires that either the `user_id` or `tozny_email` field be set.
  */
 public class UserAddRequest implements ToznyApiRequest {
