@@ -1,5 +1,6 @@
 package com.tozny.sdk.realm.methods.question_challenge;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiRequest;
 
@@ -8,6 +9,7 @@ import javax.annotation.Nullable;
 /**
  * Constructs a Request for invoking the "realm.question_challenge" method.
  */
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class QuestionChallengeRequest implements ToznyApiRequest {
 
     @JsonProperty(required=true) private String method = "realm.question_challenge";

@@ -1,8 +1,10 @@
 package com.tozny.sdk.realm.methods.check_valid_login;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiRequest;
 
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class CheckValidLoginRequest implements ToznyApiRequest {
 
     @JsonProperty(required=true) private String method = "realm.check_valid_login";

@@ -1,5 +1,6 @@
 package com.tozny.sdk.realm;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
@@ -43,6 +44,7 @@ import java.util.Map;
  * }
  * </pre>
  */
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class User {
 
     @JsonProperty private String user_id;

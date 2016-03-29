@@ -1,11 +1,13 @@
 package com.tozny.sdk.realm.methods.user_device_add;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiRequest;
 
 /**
  * Collects request parameters for invoking the "realm.user_device_add" method.
  */
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class UserDeviceAddRequest implements ToznyApiRequest {
 
     @JsonProperty private String method = "realm.user_device_add";

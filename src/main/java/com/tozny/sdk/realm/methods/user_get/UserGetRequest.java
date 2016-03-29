@@ -1,5 +1,6 @@
 package com.tozny.sdk.realm.methods.user_get;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiRequest;
 
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
  * Collects request parameters for invoking the "realm.user_get" method.
  * Requires that either the `user_id` or `tozny_email` field be set.
  */
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class UserGetRequest implements ToznyApiRequest {
 
     @JsonProperty private String method = "realm.user_get";
