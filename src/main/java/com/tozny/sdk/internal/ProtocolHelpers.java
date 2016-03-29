@@ -76,7 +76,7 @@ public class ProtocolHelpers {
      * @return an expiry timestamp 6 minutes in the future from now.
      */
     public static String getExpires () {
-        return Double.toString(Math.floor((System.currentTimeMillis() + (5 * 60 * 1000)) / 1000));
+        return String.format("%.0f", Math.floor((System.currentTimeMillis() + (5 * 60 * 1000)) / 1000));
     }
 
     /**
