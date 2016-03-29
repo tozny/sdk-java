@@ -33,7 +33,7 @@ public class UserAddRequest implements ToznyApiRequest {
             boolean defer,
             String tozny_email,
             @Nullable String pub_key) {
-        this(defer, Collections.singletonMap("tozny_email", tozny_email), pub_key);
+        this(defer, Collections.singletonMap("email", tozny_email), pub_key);
     }
 
     public String getMethod() {
