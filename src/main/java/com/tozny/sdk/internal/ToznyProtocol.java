@@ -112,6 +112,7 @@ public class ToznyProtocol {
         }
 
         if (!response.isSuccessful()) {
+            response.body().close();
             String message = response.message() != null ? response.message() : "";
             String location = "";  // TODO
             throw new ToznyApiException(Collections.singletonList(
@@ -132,6 +133,9 @@ public class ToznyProtocol {
         catch (IOException e) {
             String message = "While calling "+req+".";
             throw new ToznyApiException(message, e);
+        }
+        finally {
+            response.body().close();
         }
 
         if (apiResponse.isError()) {
