@@ -16,6 +16,7 @@ public class UserAddResponse extends ToznyApiResponse<Void> {
 
     private final String username;
     private final String user_id;
+    private final String user_secret;
     private final String user_temp_key;
     private final String secret_enrollment_url;
     private final String secret_enrollment_qr_url;
@@ -33,6 +34,7 @@ public class UserAddResponse extends ToznyApiResponse<Void> {
 
             @JsonProperty("username")                 String username,
             @JsonProperty("user_id")                  String user_id,
+            @JsonProperty("user_secret")              String user_secret,
             @JsonProperty("user_temp_key")            String user_temp_key,
             @JsonProperty("secret_enrollment_url")    String secret_enrollment_url,
             @JsonProperty("secret_enrollment_qr_url") String secret_enrollment_qr_url,
@@ -43,6 +45,7 @@ public class UserAddResponse extends ToznyApiResponse<Void> {
         super(ret, null, null, count, total, errors);
         this.username = username;
         this.user_id = user_id;
+        this.user_secret = user_secret;
         this.user_temp_key = user_temp_key;
         this.secret_enrollment_url = secret_enrollment_url;
         this.secret_enrollment_qr_url = secret_enrollment_qr_url;
@@ -58,6 +61,10 @@ public class UserAddResponse extends ToznyApiResponse<Void> {
 
     public String getUserId() {
         return user_id;
+    }
+
+    public String getUserSecret() {
+        return user_secret;
     }
 
     public String getUserTempKey() {
