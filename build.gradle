@@ -61,6 +61,9 @@ test {
   systemProperties = [
     testProperties: 'test.properties'
   ]
+  testLogging {
+    showStandardStreams = true
+  }
 }
 
 jacocoTestReport {

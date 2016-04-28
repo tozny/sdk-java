@@ -4,6 +4,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.tozny.sdk.internal.ProtocolHelpers;
 import com.tozny.sdk.internal.ToznyProtocol;
 import com.tozny.sdk.realm.RealmConfig;
@@ -76,7 +77,8 @@ public class RealmApi {
     public UserAddResponse userAdd(
             boolean defer, Map<String,String> metadata) throws ToznyApiException {
         UserAddRequest req = new UserAddRequest(defer, metadata, null);
-        UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
+        UserAddResponse resp = protocol.<UserAddResponse>dispatch(
+                req, new TypeReference<UserAddResponse>() {});
         if (resp.isError()) {
             throw resp.getException();
         }
@@ -95,7 +97,8 @@ public class RealmApi {
     public UserAddResponse userAddWithEmail(
             boolean defer, String email) throws ToznyApiException {
         UserAddRequest req = new UserAddRequest(defer, email, null);
-        UserAddResponse resp = protocol.<UserAddResponse>dispatch(req, UserAddResponse.class);
+        UserAddResponse resp = protocol.<UserAddResponse>dispatch(
+                req, new TypeReference<UserAddResponse>() {});
         if (resp.isError()) {
             throw resp.getException();
         }
@@ -115,7 +118,8 @@ public class RealmApi {
      */
     public UserDeviceAddResponse userDeviceAdd(String userId) throws ToznyApiException {
         UserDeviceAddRequest req = new UserDeviceAddRequest(userId);
-        UserDeviceAddResponse resp = protocol.<UserDeviceAddResponse>dispatch(req, UserDeviceAddResponse.class);
+        UserDeviceAddResponse resp = protocol.<UserDeviceAddResponse>dispatch(
+                req, new TypeReference<UserDeviceAddResponse>() {});
         if (resp.isError()) {
             throw resp.getException();
         }
@@ -132,13 +136,9 @@ public class RealmApi {
      */
     public User userGet (String userId) throws ToznyApiException {
         UserGetResponse resp = protocol.<UserGetResponse>dispatch(
-                new UserGetRequest(userId, null), UserGetResponse.class);
-        if (resp.isError()) {
-            throw resp.getException();
-        }
-        else {
-            return resp.getResult();
-        }
+                new UserGetRequest(userId, null),
+                new TypeReference<UserGetResponse>() {});
+        return resp.getResult();
     }
 
     /**
@@ -149,13 +149,9 @@ public class RealmApi {
      */
     public User userGetByEmail (String email) throws ToznyApiException {
         UserGetResponse resp = protocol.<UserGetResponse>dispatch(
-                new UserGetRequest(null, email), UserGetResponse.class);
-        if (resp.isError()) {
-            throw resp.getException();
-        }
-        else {
-            return resp.getResult();
-        }
+                new UserGetRequest(null, email),
+                new TypeReference<UserGetResponse>() {});
+        return resp.getResult();
     }
 
     /**
@@ -175,24 +171,16 @@ public class RealmApi {
      * @return true if the user exists
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
-    public boolean userExistsByEmail(String email) throws ToznyApiException {
+    public Boolean userExistsByEmail(String email) throws ToznyApiException {
         UserExistsRequest req = new UserExistsRequest(null, email);
         return dispatchUserExists(req);
     }
 
     private boolean dispatchUserExists(UserExistsRequest req) throws ToznyApiException {
-        ToznyApiResponse resp = protocol.<ToznyApiResponse>dispatch(
-                req, ToznyApiResponse.class);
+        ToznyApiResponse<Boolean> resp = protocol.<ToznyApiResponse<Boolean>>dispatch(
+                req, new TypeReference<ToznyApiResponse<Boolean>>() {});
         String ret = resp.getReturn();
-        if (ret.equals("true")) {
-            return true;
-        }
-        else if (ret.equals("false")) {
-            return false;
-        }
-        else {
-            throw resp.getException();
-        }
+        return ret != null && ret.equals("true");
     }
 
     /**
@@ -216,13 +204,7 @@ public class RealmApi {
      */
     public Session questionChallenge (String question, String userId) throws ToznyApiException {
         QuestionChallengeRequest req = new QuestionChallengeRequest(question, userId);
-        Session response = protocol.dispatch(req, Session.class);
-        if (response.isError()) {
-            throw response.getException();
-        }
-        else {
-            return response;
-        }
+        return protocol.<Session>dispatch(req, new TypeReference<Session>() {});
     }
 
     /**
@@ -235,18 +217,9 @@ public class RealmApi {
      */
     public boolean checkValidLogin (String userId, String sessionId) throws ToznyApiException {
         CheckValidLoginRequest req = new CheckValidLoginRequest(userId, sessionId);
-        ToznyApiResponse resp = protocol.<ToznyApiResponse>dispatch(
-                req, ToznyApiResponse.class);
-        String ret = resp.getReturn();
-        if (ret.equals("true")) {
-            return true;
-        }
-        else if (ret.equals("false")) {
-            return false;
-        }
-        else {
-            throw resp.getException();
-        }
+        ToznyApiResponse<Boolean> resp = protocol.<ToznyApiResponse<Boolean>>dispatch(
+                req, new TypeReference<ToznyApiResponse<Boolean>>() {});
+        return resp.getResult();
     }
 
 }

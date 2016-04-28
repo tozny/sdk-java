@@ -3,6 +3,7 @@ package com.tozny.sdk.internal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.Module;
@@ -63,14 +64,14 @@ public class ToznyProtocol {
      * marshaling into the result type.
      *
      * @param req The Tozny API Request object
-     * @param dataClass The response marshalling class.
+     * @param valueTypeRef The type to use when deserializing a JSON response.
      * @param <T> A descendant of ToznyApiResponse, which will provide helpers for managing ToznyAPI errors.
      * @return an instance of the given dataClass.
      * @throws ToznyApiException if an I/O or protocol error occurs during the API call
      */
     public <T extends ToznyApiResponse<?>> T dispatch(
             ToznyApiRequest req,
-            Class<T> dataClass) throws ToznyApiException {
+            TypeReference valueTypeRef) throws ToznyApiException {
 
         String signedData;
         String signature;
@@ -124,7 +125,7 @@ public class ToznyProtocol {
 
         T apiResponse;
         try {
-            apiResponse = mapper.readValue(response.body().byteStream(), dataClass);
+            apiResponse = mapper.readValue(response.body().byteStream(), valueTypeRef);
         }
         catch (JsonProcessingException e) {
             String message = "While calling "+req+".";
