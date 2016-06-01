@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.4] - 2016-06-02
+
+- Add basicsupport for `realm.users_get` API calls
+
+## [2.1.3] - 2016-04-28
+
+- Fix JSON interpretation in `checkValidLogin` requests
+
 ## [2.1.2] - 2016-03-30
 
 - Fix incorrect key name in JSON deserialization
