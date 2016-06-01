@@ -2,6 +2,7 @@ package com.tozny.sdk;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,6 +20,8 @@ import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddResponse;
 import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
+import com.tozny.sdk.realm.methods.users_get.UsersGetRequest;
+import com.tozny.sdk.realm.methods.users_get.UsersGetResponse;
 
 /**
  * Main entry point to the Tozny API's Realm calls.
@@ -151,6 +154,34 @@ public class RealmApi {
         UserGetResponse resp = protocol.<UserGetResponse>dispatch(
                 new UserGetRequest(null, email),
                 new TypeReference<UserGetResponse>() {});
+        return resp.getResult();
+    }
+
+    public Map<String,User> usersGet (String term, List<Map<String, String>> meta_advanced, List<String> user_ids, Integer rows) throws ToznyApiException {
+        UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
+                new UsersGetRequest(term, meta_advanced, user_ids, rows),
+                new TypeReference<UsersGetResponse>() {});
+        return resp.getResult();
+    }
+
+    public Map<String,User> usersGetByTerm (String term) throws ToznyApiException {
+        UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
+                new UsersGetRequest(term, null, null, null),
+                new TypeReference<UsersGetResponse>() {});
+        return resp.getResult();
+    }
+
+    public Map<String,User> usersGetByMetaAdvanced (List<Map<String, String>> meta_advanced) throws ToznyApiException {
+        UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
+                new UsersGetRequest(null, meta_advanced, null, null),
+                new TypeReference<UsersGetResponse>() {});
+        return resp.getResult();
+    }
+
+    public Map<String,User> usersGetByUserIDs (List<String> user_ids) throws ToznyApiException {
+        UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
+                new UsersGetRequest(null, null, user_ids, null),
+                new TypeReference<UsersGetResponse>() {});
         return resp.getResult();
     }
 
