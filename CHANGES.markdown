@@ -1,8 +1,12 @@
 # Change Log
 
+## [2.1.5] - 2016-06-02
+
+- Update documentation
+
 ## [2.1.4] - 2016-06-02
 
-- Add basicsupport for `realm.users_get` API calls
+- Add basic support for `realm.users_get` API calls
 
 ## [2.1.3] - 2016-04-28
 
