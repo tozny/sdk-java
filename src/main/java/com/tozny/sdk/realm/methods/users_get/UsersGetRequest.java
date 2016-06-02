@@ -29,22 +29,22 @@ public class UsersGetRequest implements ToznyApiRequest {
 
     public UsersGetRequest(
             @Nullable String term,
-            @Nullable List<Map<String, String>> meta_advanced,
+            @Nullable List<Map<String,String>> meta_advanced,
             @Nullable List<String> user_ids,
             @Nullable Integer rows) {
         this.term = term;
         this.rows = (rows == null) ? 1 : rows;
 
-        if ( user_ids != null ) {
+        if (user_ids != null) {
             this.user_ids = String.join(",", user_ids);
         }
 
-        if ( meta_advanced != null ) {
+        if (meta_advanced != null) {
             try {
                 byte[] json = new ObjectMapper().writeValueAsBytes(meta_advanced);
                 this.meta_advanced = ProtocolHelpers.base64UrlEncode(json);
             }
-            catch (JsonProcessingException e ) {
+            catch (JsonProcessingException e) {
                 throw new ToznyApiException("Error while serializing users_get JSON", e);
             }
         }

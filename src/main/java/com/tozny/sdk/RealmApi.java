@@ -157,13 +157,30 @@ public class RealmApi {
         return resp.getResult();
     }
 
-    public Map<String,User> usersGet (String term, List<Map<String, String>> meta_advanced, List<String> user_ids, Integer rows) throws ToznyApiException {
+    /**
+     * Calls 'realm.users_get' to retrieve a collection of users given the specified query parameters.
+     *
+     * @param term A single search term applied against searchable meta fields as defined on the realm.
+     * @param meta_advanced A collection of meta fields against which to search. Must include maps of 'field' -> {field name}, 'comparator' -> {comparison type}, 'value' -> {search value}.
+     * @param user_ids List of user IDs to return.
+     * @param rows Total number of results to return
+     * @return Collection of <code>User</code> instances
+     * @throws ToznyApiException
+     */
+    public Map<String,User> usersGet (String term, List<Map<String,String>> meta_advanced, List<String> user_ids, Integer rows) throws ToznyApiException {
         UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
                 new UsersGetRequest(term, meta_advanced, user_ids, rows),
                 new TypeReference<UsersGetResponse>() {});
         return resp.getResult();
     }
 
+    /**
+     * Calls 'realm.users_get' to retrieve a collection of users given the specified query parameters.
+     *
+     * @param term A single search term applied against searchable meta fields as defined on the realm.
+     * @return Collection of <code>User</code> instances
+     * @throws ToznyApiException
+     */
     public Map<String,User> usersGetByTerm (String term) throws ToznyApiException {
         UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
                 new UsersGetRequest(term, null, null, null),
@@ -171,13 +188,27 @@ public class RealmApi {
         return resp.getResult();
     }
 
-    public Map<String,User> usersGetByMetaAdvanced (List<Map<String, String>> meta_advanced) throws ToznyApiException {
+    /**
+     * Calls 'realm.users_get' to retrieve a collection of users given the specified query parameters.
+     *
+     * @param meta_advanced A collection of meta fields against which to search. Must include maps of 'field' -> {field name}, 'comparator' -> {comparison type}, 'value' -> {search value}.
+     * @return Collection of <code>User</code> instances
+     * @throws ToznyApiException
+     */
+    public Map<String,User> usersGetByMetaAdvanced (List<Map<String,String>> meta_advanced) throws ToznyApiException {
         UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
                 new UsersGetRequest(null, meta_advanced, null, null),
                 new TypeReference<UsersGetResponse>() {});
         return resp.getResult();
     }
 
+    /**
+     * Calls 'realm.users_get' to retrieve a collection of users given the specified query parameters.
+     *
+     * @param user_ids List of user IDs to return.
+     * @return Collection of <code>User</code> instances
+     * @throws ToznyApiException
+     */
     public Map<String,User> usersGetByUserIDs (List<String> user_ids) throws ToznyApiException {
         UsersGetResponse resp = protocol.<UsersGetResponse>dispatch(
                 new UsersGetRequest(null, null, user_ids, null),
