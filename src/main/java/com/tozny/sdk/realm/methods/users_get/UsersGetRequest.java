@@ -36,7 +36,12 @@ public class UsersGetRequest implements ToznyApiRequest {
         this.rows = (rows == null) ? 1 : rows;
 
         if (user_ids != null) {
-            this.user_ids = String.join(",", user_ids);
+            StringBuilder user_list = new StringBuilder();
+            for ( int i = 0, il = user_ids.size(); i < il; i++ ) {
+                if ( i > 0 ) user_list.append( "," );
+                user_list.append( user_ids.get( i ) );
+            }
+            this.user_ids = user_list.toString();
         }
 
         if (meta_advanced != null) {
