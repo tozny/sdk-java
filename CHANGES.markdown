@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.1.7] - 2016-06-27
+
+- Fix a Java 7 incompatibility
+- Resolve a null pointer exception in the new `realm.users_get` call
+
 ## [2.1.6] - 2016-06-03
 
 - Fix a JSON parsing exception when no results are returned from `realm.users_get` calls
