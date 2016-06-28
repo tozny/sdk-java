@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -78,6 +79,7 @@ public class RealmApiTest {
     }
 
     @Test
+    @Ignore // @TODO Update the production database to have this user information
     public void testUsersGetByMetaAdvanced() throws IOException {
         Map<String, String> phone = new HashMap<String, String>();
         phone.put("field", "phone");
