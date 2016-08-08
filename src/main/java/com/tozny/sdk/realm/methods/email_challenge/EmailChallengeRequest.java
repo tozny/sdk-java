@@ -15,7 +15,7 @@ public class EmailChallengeRequest implements ToznyApiRequest {
     @JsonProperty(required=true) private String destination;
     @JsonProperty private String callback;
     @JsonProperty private String hostname;
-    @JsonProperty private Boolean send;
+    @JsonProperty private String send;
 
     public EmailChallengeRequest(String destination, @Nullable String callback, @Nullable String hostname, @Nullable Boolean send) {
         this.destination = destination;
@@ -23,9 +23,9 @@ public class EmailChallengeRequest implements ToznyApiRequest {
         this.hostname = hostname;
 
         if (send == null) {
-            this.send = true;
+            this.send = "yes";
         } else {
-            this.send = send;
+            this.send = "no";
         }
     }
 
@@ -49,6 +49,6 @@ public class EmailChallengeRequest implements ToznyApiRequest {
 
     @Nullable
     public Boolean getSend() {
-        return send;
+        return send.equals("yes");
     }
 }
