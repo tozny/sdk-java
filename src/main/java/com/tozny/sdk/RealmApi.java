@@ -8,10 +8,12 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.tozny.sdk.internal.ProtocolHelpers;
 import com.tozny.sdk.internal.ToznyProtocol;
+import com.tozny.sdk.realm.EmailChallenge;
 import com.tozny.sdk.realm.RealmConfig;
 import com.tozny.sdk.realm.Session;
 import com.tozny.sdk.realm.User;
 import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginRequest;
+import com.tozny.sdk.realm.methods.email_challenge.EmailChallengeRequest;
 import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeRequest;
 import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
 import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
@@ -267,6 +269,21 @@ public class RealmApi {
     public Session questionChallenge (String question, String userId) throws ToznyApiException {
         QuestionChallengeRequest req = new QuestionChallengeRequest(question, userId);
         return protocol.<Session>dispatch(req, new TypeReference<Session>() {});
+    }
+
+    /**
+     * Calls 'realm.email_challenge' to create a new email OTP challenge session.
+     *
+     * @param destination Email address to which we send a challenge
+     * @param callback URL to which Tozny should submit the signed email verification. If omitted, user.email_result will return the verification instead.
+     * @param hostname Hostname for the generated OTP URL.
+     * @param send Flag whether or not to send the email. If false, the OTP URL will be returned.
+     * @return Session instance representing the OTP challenge
+     * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
+     */
+    public EmailChallenge emailChallenge (String destination, String callback, String hostname, Boolean send) throws ToznyApiException {
+        EmailChallengeRequest req = new EmailChallengeRequest(destination, callback, hostname, send);
+        return protocol.<EmailChallenge>dispatch(req, new TypeReference<EmailChallenge>() {});
     }
 
     /**

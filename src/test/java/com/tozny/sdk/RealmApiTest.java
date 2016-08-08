@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import com.tozny.sdk.realm.EmailChallenge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -134,6 +135,15 @@ public class RealmApiTest {
         assertNotNull(session.getMobileUrl());
         assertNotNull(session.getPresence());
         assertNotNull(session.getCreatedAt());
+    }
+
+    @Test
+    public void testEmailChallenge() throws IOException {
+        EmailChallenge challenge = this.realmApi.emailChallenge("testuser@tozny.com", null, null, false);
+
+        assertNotNull(challenge.getSessionId());
+        assertNotNull(challenge.getPresence());
+        assertNotNull(challenge.getUrl());
     }
 
     @Test
