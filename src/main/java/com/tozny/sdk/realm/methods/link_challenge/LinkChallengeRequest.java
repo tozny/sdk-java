@@ -1,4 +1,4 @@
-package com.tozny.sdk.realm.methods.email_challenge;
+package com.tozny.sdk.realm.methods.link_challenge;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,18 +7,20 @@ import com.tozny.sdk.ToznyApiRequest;
 import javax.annotation.Nullable;
 
 /**
- * Constructs a Request for invoking the "realm.email_challenge" method.
+ * Constructs a Request for invoking the "realm.link_challenge" method.
  */
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class EmailChallengeRequest implements ToznyApiRequest {
-    @JsonProperty(required=true) private String method = "realm.email_challenge";
+public class LinkChallengeRequest implements ToznyApiRequest {
+    @JsonProperty(required=true) private String method = "realm.link_challenge";
     @JsonProperty(required=true) private String destination;
+    @JsonProperty private String context;
     @JsonProperty private String callback;
     @JsonProperty private String hostname;
     @JsonProperty private String send;
 
-    public EmailChallengeRequest(String destination, @Nullable String callback, @Nullable String hostname, @Nullable Boolean send) {
+    public LinkChallengeRequest(String destination, @Nullable String context, @Nullable String callback, @Nullable String hostname, @Nullable Boolean send) {
         this.destination = destination;
+        this.context = context;
         this.callback = callback;
         this.hostname = hostname;
 
@@ -35,6 +37,11 @@ public class EmailChallengeRequest implements ToznyApiRequest {
 
     public String getDestination() {
         return destination;
+    }
+
+    @Nullable
+    public String getContext() {
+        return context;
     }
 
     @Nullable

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiResponse;
 
+import javax.annotation.Nullable;
 import java.net.URL;
 
 /**
- * Holds the Tozny API response for an email challenge.
+ * Holds the Tozny API response for a link challenge.
  *
- * An example realm.email_challenge response:
+ * An example realm.link_challenge response:
  * <pre>
  * {@code
  * {
@@ -22,19 +23,19 @@ import java.net.URL;
  * }
  * </pre>
  */
-public class EmailChallenge extends ToznyApiResponse<Void> {
+public class LinkChallenge extends ToznyApiResponse<Void> {
 
     private final String session_id;
     private final String presence;
     private final URL url;
 
     @JsonCreator
-    public EmailChallenge(
+    public LinkChallenge(
             @JsonProperty("return") String ret,
 
-            @JsonProperty("session_id") String session_id,
-            @JsonProperty("presence")   String presence,
-            @JsonProperty("url")        URL url
+            @JsonProperty("session_id")    String session_id,
+            @JsonProperty("presence")      String presence,
+            @Nullable @JsonProperty("url") URL url
     ) {
         super(ret, null, null, null, null, null);
 
@@ -51,13 +52,14 @@ public class EmailChallenge extends ToznyApiResponse<Void> {
         return presence;
     }
 
+    @Nullable
     public URL getUrl() {
         return url;
     }
 
     @Override
     public String toString() {
-        return "EmailChallenge{" +
+        return "LinkChallenge{" +
                 "session_id='" + session_id + '\'' +
                 ", presence='" + presence + '\'' +
                 ", url=" + url +

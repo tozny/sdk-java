@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import com.tozny.sdk.realm.EmailChallenge;
-import org.junit.After;
+import com.tozny.sdk.realm.LinkChallenge;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -51,6 +50,7 @@ public class RealmApiTest {
         this.userPhone = props.getProperty("userPhone");
 
         this.realmConfig = new RealmConfig(
+            "https://eamapi.ngrok.io",
             new ToznyRealmKeyId(this.realmKeyId),
             new ToznyRealmSecret(this.realmSecret)
         );
@@ -138,8 +138,8 @@ public class RealmApiTest {
     }
 
     @Test
-    public void testEmailChallenge() throws IOException {
-        EmailChallenge challenge = this.realmApi.emailChallenge("testuser@tozny.com", null, null, false);
+    public void testLinkChallenge() throws IOException {
+        LinkChallenge challenge = this.realmApi.linkChallenge("testuser@tozny.com", "verify", null, null, false);
 
         assertNotNull(challenge.getSessionId());
         assertNotNull(challenge.getPresence());
