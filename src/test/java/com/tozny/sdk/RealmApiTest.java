@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import com.tozny.sdk.realm.LinkChallenge;
+import com.tozny.sdk.realm.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.tozny.sdk.realm.RealmConfig;
-import com.tozny.sdk.realm.Session;
-import com.tozny.sdk.realm.User;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
 
@@ -144,6 +141,14 @@ public class RealmApiTest {
         assertNotNull(challenge.getSessionId());
         assertNotNull(challenge.getPresence());
         assertNotNull(challenge.getUrl());
+    }
+
+    @Test
+    public void testOTPChallenge() throws IOException {
+        OTPChallenge challenge = this.realmApi.otpChallenge("email", "verify", "testuser@tozny.com", null, null);
+
+        assertNotNull(challenge.getSessionId());
+        assertNotNull(challenge.getPresence());
     }
 
     @Test

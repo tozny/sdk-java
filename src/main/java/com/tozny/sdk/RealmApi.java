@@ -8,12 +8,10 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.tozny.sdk.internal.ProtocolHelpers;
 import com.tozny.sdk.internal.ToznyProtocol;
-import com.tozny.sdk.realm.LinkChallenge;
-import com.tozny.sdk.realm.RealmConfig;
-import com.tozny.sdk.realm.Session;
-import com.tozny.sdk.realm.User;
+import com.tozny.sdk.realm.*;
 import com.tozny.sdk.realm.methods.check_valid_login.CheckValidLoginRequest;
 import com.tozny.sdk.realm.methods.link_challenge.LinkChallengeRequest;
+import com.tozny.sdk.realm.methods.otp_challenge.OTPChallengeRequest;
 import com.tozny.sdk.realm.methods.question_challenge.QuestionChallengeRequest;
 import com.tozny.sdk.realm.methods.user_exists.UserExistsRequest;
 import com.tozny.sdk.realm.methods.user_add.UserAddResponse;
@@ -272,19 +270,38 @@ public class RealmApi {
     }
 
     /**
-     * Calls 'realm.link_challenge' to create a new email OTP challenge session.
+     * Calls 'realm.link_challenge' to create a new magic link challenge session.
      *
-     * @param destination Email address to which we send a challenge
+     * @param destination Email address or phone number to which we send a challenge
      * @param context One of "verify," "authenticate," or "enroll"
      * @param callback URL to which Tozny should submit the signed email verification. If omitted, user.email_result will return the verification instead.
      * @param hostname Hostname for the generated OTP URL.
      * @param send Flag whether or not to send the email. If false, the OTP URL will be returned.
-     * @return Session instance representing the OTP challenge
+     *
+     * @return Session instance representing the magic link challenge
+     *
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
     public LinkChallenge linkChallenge (String destination, String context, String callback, String hostname, Boolean send) throws ToznyApiException {
         LinkChallengeRequest req = new LinkChallengeRequest(destination, context, callback, hostname, send);
         return protocol.<LinkChallenge>dispatch(req, new TypeReference<LinkChallenge>() {});
+    }
+
+    /**
+     * Calls `realm.otp_challenge` to create a new OTP challenge session
+     * @param type One of "sms-otp-6," "sms-otp-8," or "email"
+     * @param context One of "verify," "authenticate," or "enroll"
+     * @param destination Email address or phone number to which we send a challenge
+     * @param presence Optional presence token to re-use a previous destination/type pair
+     * @param data Optional serialized (JSON-encoded) realm data
+     *
+     * @return Session instance representing the OTP challenge
+     *
+     * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
+     */
+    public OTPChallenge otpChallenge(String type, String context, String destination, String presence, String data) throws ToznyApiException {
+        OTPChallengeRequest req = new OTPChallengeRequest(type, context, destination, presence, data);
+        return protocol.<OTPChallenge>dispatch(req, new TypeReference<OTPChallenge>() {});
     }
 
     /**
