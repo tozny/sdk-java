@@ -47,7 +47,6 @@ public class RealmApiTest {
         this.userPhone = props.getProperty("userPhone");
 
         this.realmConfig = new RealmConfig(
-            "https://eamapi.ngrok.io",
             new ToznyRealmKeyId(this.realmKeyId),
             new ToznyRealmSecret(this.realmSecret)
         );
