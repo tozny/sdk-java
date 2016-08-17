@@ -24,7 +24,7 @@ public class LinkChallengeRequest implements ToznyApiRequest {
         this.callback = callback;
         this.hostname = hostname;
 
-        if (send == null) {
+        if (send == null || send ) {
             this.send = "yes";
         } else {
             this.send = "no";
