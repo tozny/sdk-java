@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  */
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class OTPChallengeRequest implements ToznyApiRequest {
-    @JsonProperty(required=true) private String method = "realm.lotp_challenge";
+    @JsonProperty(required=true) private String method = "realm.otp_challenge";
     @JsonProperty private String type;
     @JsonProperty private String context;
     @JsonProperty private String destination;
