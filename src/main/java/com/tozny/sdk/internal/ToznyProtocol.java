@@ -188,7 +188,7 @@ public class ToznyProtocol {
         return new OkHttpClient();
     }
 
-    private static Module getJacksonModule() {
+    public static Module getJacksonModule() {
         Version version = new Version(1, 0, 0, null, "com.github.tozny", "tozny-sdk");
         SimpleModule toznyModule = new SimpleModule("ToznyModule", version);
         toznyModule.addDeserializer(Date.class, new DateDeserializer());
