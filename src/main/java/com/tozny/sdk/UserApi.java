@@ -41,7 +41,7 @@ public class UserApi {
     public UserApi(String apiUrl, String realmKeyId) {
         this.apiUrl = apiUrl;
         this.realmKeyId = realmKeyId;
-        this.client = new OkHttpClient();
+        this.client = new OkHttpClient().newBuilder().followRedirects(false).followSslRedirects(false).build();
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(ToznyProtocol.getJacksonModule());
     }
@@ -125,8 +125,19 @@ public class UserApi {
         return this.<Challenge>rawCall("user.otp_challenge", args, new TypeReference<Challenge>() {});
     }
 
-    public boolean linkResult() {
-        return false;
+    /**
+     * Validate an email or SMS-based magic link OTP in userland.
+     *
+     * @param otp        The OTP provided to the end user
+     *
+     * @return A Realm-signed version of the OTP session.
+     */
+    public Result linkResult(String otp) {
+        Map<String, String> args = new HashMap<String, String>() {{
+            put("otp", otp);
+        }};
+
+        return this.<Result>rawCall("user.link_result", args, new TypeReference<Result>() {});
     }
 
     /**
@@ -194,7 +205,18 @@ public class UserApi {
             throw new ToznyApiException(message, e);
         }
 
-        if (! response.isSuccessful()) {
+        T apiResponse;
+        if (response.isRedirect()) {
+            response.body().close();
+            String location = response.header("Location");
+            String data = convert("return=ok&callback=" + location.split("\\?")[0] + "&" + location.split("\\?")[1]);
+            try {
+                apiResponse = mapper.readValue(data, valueTypeRef);
+            } catch (IOException e) {
+                String message = "While calling " + method + ".";
+                throw new ToznyApiException(message, e);
+            }
+        } else if (!response.isSuccessful()) {
             response.body().close();
             String message = response.message() != null ? response.message() : "";
 
@@ -203,22 +225,17 @@ public class UserApi {
                             response.code(), message, method
                     )
             ));
-        }
-
-        T apiResponse;
-        try {
-            apiResponse = mapper.readValue(response.body().byteStream(), valueTypeRef);
-        }
-        catch (JsonProcessingException e) {
-            String message = "While calling "+method+".";
-            throw new ToznyApiException(message, e);
-        }
-        catch (IOException e) {
-            String message = "While calling "+method+".";
-            throw new ToznyApiException(message, e);
-        }
-        finally {
-            response.body().close();
+        } else {
+            try {
+                apiResponse = mapper.readValue(response.body().byteStream(), valueTypeRef);
+            }
+            catch (IOException e) {
+                String message = "While calling "+method+".";
+                throw new ToznyApiException(message, e);
+            }
+            finally {
+                response.body().close();
+            }
         }
 
         if (apiResponse.isError()) {
@@ -227,5 +244,21 @@ public class UserApi {
         else {
             return apiResponse;
         }
+    }
+
+    private static String convert(String a) {
+        String res = "{\"";
+
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) == '=') {
+                res += "\"" + ":" + "\"";
+            } else if (a.charAt(i) == '&') {
+                res += "\"" + "," + "\"";
+            } else {
+                res += a.charAt(i);
+            }
+        }
+        res += "\"" + "}";
+        return res;
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tozny.sdk.ToznyApiResponse;
 
+import javax.annotation.Nullable;
+
 /**
  * Holds the Tozny API response for an OTP or link result.
  *
@@ -23,19 +25,25 @@ public class Result extends ToznyApiResponse<Void> {
 
     private final String signed_data;
     private final String signature;
+    private final String ua;
+    private final String callback;
 
     @JsonCreator
     public Result(
             @JsonProperty("return") String ret,
             @JsonProperty("status_code") Integer status_code,
 
-            @JsonProperty("signed_data")    String signed_data,
-            @JsonProperty("signature")      String signature
+            @JsonProperty("signed_data")        String signed_data,
+            @JsonProperty("signature")          String signature,
+            @Nullable @JsonProperty("callback") String callback,
+            @Nullable @JsonProperty("ua")       String ua
     ) {
         super(ret, null, null, null, null, null);
 
         this.signed_data = signed_data;
         this.signature = signature;
+        this.ua = ua;
+        this.callback = callback;
     }
 
     public String getSigned_data() {
@@ -46,11 +54,23 @@ public class Result extends ToznyApiResponse<Void> {
         return signature;
     }
 
+    @Nullable
+    public String getUa() {
+        return ua;
+    }
+
+    @Nullable
+    public String getCallback() {
+        return callback;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
                 "signed_data='" + signed_data + '\'' +
-                ", signature='" + signature +
+                ", signature='" + signature + '\'' +
+                ", ua='" + ua + '\'' +
+                ", callback='" + callback + '\'' +
                 '}';
     }
 }
