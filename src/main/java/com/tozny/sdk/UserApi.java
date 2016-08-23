@@ -129,6 +129,14 @@ public class UserApi {
         return false;
     }
 
+    /**
+     * Validate an email or SMS-based OTP in userland.
+     *
+     * @param otp        The OTP provided to the end user
+     * @param session_id The session ID from the original *.otp_challenge request.
+     *
+     * @return A Realm-signed version of the OTP session.
+     */
     public Result otpResult(String otp, String session_id) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("otp", otp);
