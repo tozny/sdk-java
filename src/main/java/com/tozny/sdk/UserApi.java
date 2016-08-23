@@ -1,11 +1,12 @@
 package com.tozny.sdk;
 
-import com.tozny.sdk.internal.ToznyProtocol;
-import com.tozny.sdk.user.Challenge;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.tozny.sdk.internal.ToznyProtocol;
+import com.tozny.sdk.user.Challenge;
+import com.tozny.sdk.user.Result;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
@@ -128,8 +129,13 @@ public class UserApi {
         return false;
     }
 
-    public boolean otpResult() {
-        return false;
+    public Result otpResult(String otp, String session_id) {
+        Map<String, String> args = new HashMap<String, String>() {{
+            put("otp", otp);
+            put("session_id", session_id);
+        }};
+
+        return this.<Result>rawCall("user.otp_result", args, new TypeReference<Result>() {});
     }
 
     public boolean challengeExchange() {

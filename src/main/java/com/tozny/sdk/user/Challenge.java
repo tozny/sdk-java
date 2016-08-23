@@ -7,7 +7,7 @@ import com.tozny.sdk.ToznyApiResponse;
 /**
  * Holds the Tozny API response for an OTP or link challenge.
  *
- * An example otp.link_challenge response:
+ * An example user.link_challenge response:
  * <pre>
  * {@code
  * {
