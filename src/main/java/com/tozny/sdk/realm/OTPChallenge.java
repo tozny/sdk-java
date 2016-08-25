@@ -2,7 +2,10 @@ package com.tozny.sdk.realm;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tozny.sdk.ToznyApiException;
 import com.tozny.sdk.ToznyApiResponse;
+
+import java.util.List;
 
 /**
  * Holds the Tozny API response for an otp challenge.
@@ -27,11 +30,14 @@ public class OTPChallenge extends ToznyApiResponse<Void> {
     @JsonCreator
     public OTPChallenge(
             @JsonProperty("return") String ret,
+            @JsonProperty("count")  Integer count,
+            @JsonProperty("total")  Integer total,
+            @JsonProperty("errors") List<ToznyApiException.ToznyApiError> errors,
 
             @JsonProperty("session_id") String session_id,
             @JsonProperty("presence")   String presence
     ) {
-        super(ret, null, null, null, null, null);
+        super(ret, null, null, count, total, errors);
 
         this.session_id = session_id;
         this.presence = presence;
