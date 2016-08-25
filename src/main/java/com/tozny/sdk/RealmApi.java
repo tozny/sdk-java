@@ -273,17 +273,18 @@ public class RealmApi {
      * Calls 'realm.link_challenge' to create a new magic link challenge session.
      *
      * @param destination Email address or phone number to which we send a challenge
-     * @param context One of "verify," "authenticate," or "enroll"
-     * @param callback URL to which Tozny should submit the signed email verification. If omitted, user.email_result will return the verification instead.
-     * @param hostname Hostname for the generated OTP URL.
-     * @param send Flag whether or not to send the email. If false, the OTP URL will be returned.
+     * @param endpoint    URL endpoint base for the generated magic link
+     * @param lifespan    Number of seconds for which the magic link should be valid
+     * @param context     One of "verify," "authenticate," or "enroll"
+     * @param send        Flag whether or not to send the email. If false, the OTP URL will be returned.
+     * @param data        Optional serialized (JSON-encoded) realm data
      *
      * @return Session instance representing the magic link challenge
      *
      * @throws ToznyApiException If an error occurs either in communicating, or marshaling a response from the Tozny API.
      */
-    public LinkChallenge linkChallenge (String destination, String context, String callback, String hostname, Boolean send) throws ToznyApiException {
-        LinkChallengeRequest req = new LinkChallengeRequest(destination, context, callback, hostname, send);
+    public LinkChallenge linkChallenge (String destination, String endpoint, Integer lifespan, String context, Boolean send, String data) throws ToznyApiException {
+        LinkChallengeRequest req = new LinkChallengeRequest(destination, endpoint, lifespan, context, send, data);
         return protocol.<LinkChallenge>dispatch(req, new TypeReference<LinkChallenge>() {});
     }
 

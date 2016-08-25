@@ -13,16 +13,18 @@ import javax.annotation.Nullable;
 public class LinkChallengeRequest implements ToznyApiRequest {
     @JsonProperty(required=true) private String method = "realm.link_challenge";
     @JsonProperty(required=true) private String destination;
+    @JsonProperty(required=true) private String endpoint;
+    @JsonProperty private Integer lifespan;
     @JsonProperty private String context;
-    @JsonProperty private String callback;
-    @JsonProperty private String hostname;
     @JsonProperty private String send;
+    @JsonProperty private String data;
 
-    public LinkChallengeRequest(String destination, @Nullable String context, @Nullable String callback, @Nullable String hostname, @Nullable Boolean send) {
+    public LinkChallengeRequest(String destination, String endpoint, @Nullable Integer lifespan, @Nullable String context, @Nullable Boolean send, @Nullable String data) {
         this.destination = destination;
+        this.endpoint = endpoint;
+        this.lifespan = lifespan;
         this.context = context;
-        this.callback = callback;
-        this.hostname = hostname;
+        this.data = data;
 
         if (send == null || send ) {
             this.send = "yes";
@@ -39,23 +41,27 @@ public class LinkChallengeRequest implements ToznyApiRequest {
         return destination;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    @Nullable
+    public Integer getLifespan() {
+        return lifespan;
+    }
+
     @Nullable
     public String getContext() {
         return context;
     }
 
     @Nullable
-    public String getCallback() {
-        return callback;
-    }
-
-    @Nullable
-    public String getHostname() {
-        return hostname;
-    }
-
-    @Nullable
     public Boolean getSend() {
         return send.equals("yes");
+    }
+
+    @Nullable
+    public String getData() {
+        return data;
     }
 }
