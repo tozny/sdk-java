@@ -148,7 +148,7 @@ public class UserApi {
      * @param signed_data Signed magic link payload
      * @param signature   Realm-signed signature
      *
-     * @return An object representing either a user enrollment challenge or a device enrollment challenge
+     * @return An object representing a device enrollment challenge
      */
     public EnrollmentChallenge enrollmentChallengeExchange(String signed_data, String signature) {
         Map<String, String> args = new HashMap<String, String>() {{
