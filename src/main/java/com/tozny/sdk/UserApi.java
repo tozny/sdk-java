@@ -160,7 +160,7 @@ public class UserApi {
     }
 
     /**
-     * Exchange a signed magic link authentication challenge for a signed user information pauload
+     * Exchange a signed magic link authentication challenge for a signed user information payload
      *
      * @param signed_data Signed magic link payload
      * @param signature   Realm-signed signature
@@ -181,7 +181,7 @@ public class UserApi {
      * Send a raw method call to the Tozny API
      *
      * @param method       Name of the method to invoke
-     * @param parameters   Map of the additional parameters to send with the invocationd
+     * @param parameters   Map of the additional parameters to send with the invocation
      * @param valueTypeRef The object type to use when deserializing the response
      * @param <T>          Descendant of ToznyAPIResponse
      *
