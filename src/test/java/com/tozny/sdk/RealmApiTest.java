@@ -9,6 +9,8 @@ import com.tozny.sdk.realm.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static com.tozny.sdk.realm.RealmConfig.TOZNY_PRODUCTION_API_URL;
 import static org.junit.Assert.*;
 
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
@@ -135,7 +137,7 @@ public class RealmApiTest {
 
     @Test
     public void testLinkChallenge() throws IOException {
-        LinkChallenge challenge = this.realmApi.linkChallenge("testuser@tozny.com", "verify", null, null, false);
+        LinkChallenge challenge = this.realmApi.linkChallenge("testuser@tozny.com", TOZNY_PRODUCTION_API_URL + "?method=user.link_result", 300, "verify", false, null);
 
         assertNotNull(challenge.getSessionId());
         assertNotNull(challenge.getPresence());

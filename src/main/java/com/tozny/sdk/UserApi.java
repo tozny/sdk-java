@@ -50,18 +50,6 @@ public class UserApi {
      * Send a userland magic link challenge to a specified destination.
      *
      * @param destination Email address or phone number to which we send the challenge
-     * @param context     One of "verify," "authenticate," or "enroll"
-     *
-     * @return The session ID and presence token representing the challenge
-     */
-    public Challenge linkChallenge(String destination, String context) {
-        return linkChallenge(destination, context, null, null);
-    }
-
-    /**
-     * Send a userland magic link challenge to a specified destination.
-     *
-     * @param destination Email address or phone number to which we send the challenge
      * @param endpoint    Endpoint on the relying party API to which the link challenge should direct
      * @param context     One of "verify," "authenticate," or "enroll"
      *
