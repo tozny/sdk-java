@@ -40,7 +40,7 @@ public class UserApi {
     public UserApi(String apiUrl, String realmKeyId) {
         this.apiUrl = apiUrl;
         this.realmKeyId = realmKeyId;
-        this.client = new OkHttpClient().newBuilder().followRedirects(false).followSslRedirects(false).build();
+        this.client = new OkHttpClient();
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(ToznyProtocol.getJacksonModule());
     }
@@ -221,18 +221,7 @@ public class UserApi {
             throw new ToznyApiException(message, e);
         }
 
-        T apiResponse;
-        if (response.isRedirect()) {
-            response.body().close();
-            String location = response.header("Location");
-            String data = convert("return=ok&callback=" + location.split("\\?")[0] + "&" + location.split("\\?")[1]);
-            try {
-                apiResponse = mapper.readValue(data, valueTypeRef);
-            } catch (IOException e) {
-                String message = "While calling " + method + ".";
-                throw new ToznyApiException(message, e);
-            }
-        } else if (!response.isSuccessful()) {
+        if (!response.isSuccessful()) {
             response.body().close();
             String message = response.message() != null ? response.message() : "";
 
@@ -241,17 +230,16 @@ public class UserApi {
                             response.code(), message, method
                     )
             ));
-        } else {
-            try {
-                apiResponse = mapper.readValue(response.body().byteStream(), valueTypeRef);
-            }
-            catch (IOException e) {
-                String message = "While calling "+method+".";
-                throw new ToznyApiException(message, e);
-            }
-            finally {
-                response.body().close();
-            }
+        }
+
+        T apiResponse;
+        try {
+            apiResponse = mapper.readValue(response.body().byteStream(), valueTypeRef);
+        } catch (IOException e) {
+            String message = "While calling " + method + ".";
+            throw new ToznyApiException(message, e);
+        } finally {
+            response.body().close();
         }
 
         if (apiResponse.isError()) {
@@ -260,21 +248,5 @@ public class UserApi {
         else {
             return apiResponse;
         }
-    }
-
-    private static String convert(String a) {
-        String res = "{\"";
-
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) == '=') {
-                res += "\"" + ":" + "\"";
-            } else if (a.charAt(i) == '&') {
-                res += "\"" + "," + "\"";
-            } else {
-                res += a.charAt(i);
-            }
-        }
-        res += "\"" + "}";
-        return res;
     }
 }
