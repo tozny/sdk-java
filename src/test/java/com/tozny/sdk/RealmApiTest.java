@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import com.tozny.sdk.realm.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -13,9 +14,6 @@ import org.junit.Test;
 import static com.tozny.sdk.realm.RealmConfig.TOZNY_PRODUCTION_API_URL;
 import static org.junit.Assert.*;
 
-import com.tozny.sdk.realm.RealmConfig;
-import com.tozny.sdk.realm.Session;
-import com.tozny.sdk.realm.User;
 import com.tozny.sdk.realm.config.ToznyRealmKeyId;
 import com.tozny.sdk.realm.config.ToznyRealmSecret;
 
