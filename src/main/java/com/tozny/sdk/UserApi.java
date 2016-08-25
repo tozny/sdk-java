@@ -62,18 +62,16 @@ public class UserApi {
      * Send a userland magic link challenge to a specified destination.
      *
      * @param destination Email address or phone number to which we send the challenge
+     * @param endpoint    Endpoint on the relying party API to which the link challenge should direct
      * @param context     One of "verify," "authenticate," or "enroll"
-     * @param callback    Optional callback URL to which the signed OTP will be submitted once complete.
-     * @param hostname    Optional hostname alias for challenge.api.tozny.com
      *
      * @return The session ID and presence token representing the challenge
      */
-    public Challenge linkChallenge(String destination, String context, String callback, String hostname) {
+    public Challenge linkChallenge(String destination, String endpoint, String context) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("destination", destination);
+            put("endpoint", endpoint);
             put("context", context);
-            put("callback", callback);
-            put("hostname", hostname);
         }};
 
         return this.<Challenge>rawCall("user.link_challenge", args, new TypeReference<Challenge>() {});
