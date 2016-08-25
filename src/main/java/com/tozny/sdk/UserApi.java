@@ -5,8 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.tozny.sdk.internal.ToznyProtocol;
-import com.tozny.sdk.user.Challenge;
-import com.tozny.sdk.user.Result;
+import com.tozny.sdk.user.*;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
@@ -143,8 +142,39 @@ public class UserApi {
         return this.<Result>rawCall("user.otp_result", args, new TypeReference<Result>() {});
     }
 
-    public boolean challengeExchange() {
-        return false;
+    /**
+     * Exchange a signed magic link enrollment challenge for an actual enrollment challenge.
+     *
+     * @param signed_data Signed magic link payload
+     * @param signature   Realm-signed signature
+     *
+     * @return An object representing either a user enrollment challenge or a device enrollment challenge
+     */
+    public EnrollmentChallenge enrollmentChallengeExchange(String signed_data, String signature) {
+        Map<String, String> args = new HashMap<String, String>() {{
+            put("signed_data", signed_data);
+            put("signature", signature);
+        }};
+
+        return this.<EnrollmentChallenge>rawCall("user.challenge_exchange", args, new TypeReference<EnrollmentChallenge>() {});
+    }
+
+    /**
+     * Exchange a signed magic link authentication challenge for a signed user information pauload
+     *
+     * @param signed_data Signed magic link payload
+     * @param signature   Realm-signed signature
+     *
+     * @return An object representing the user that has just authenticated
+     */
+    public AuthenticationChallenge authenticationChallengeExchange(String signed_data, String signature, String session_id) {
+        Map<String, String> args = new HashMap<String, String>() {{
+            put("signed_data", signed_data);
+            put("signature", signature);
+            put("session_id", session_id);
+        }};
+
+        return this.<AuthenticationChallenge>rawCall("user.challenge_exchange", args, new TypeReference<AuthenticationChallenge>() {});
     }
 
     /**
