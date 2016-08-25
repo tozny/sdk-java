@@ -138,7 +138,7 @@ public class RealmApiTest {
 
     @Test
     public void testLinkChallenge() throws IOException {
-        LinkChallenge challenge = this.realmApi.linkChallenge("testuser@tozny.com", TOZNY_PRODUCTION_API_URL + "?method=user.link_result", 300, "verify", false, null);
+        LinkChallenge challenge = this.realmApi.linkChallenge(this.userEmail, TOZNY_PRODUCTION_API_URL + "?method=user.link_result", 300, "verify", false, null);
 
         assertNotNull(challenge.getSessionId());
         assertNotNull(challenge.getPresence());
@@ -147,7 +147,7 @@ public class RealmApiTest {
 
     @Test
     public void testOTPChallenge() throws IOException {
-        OTPChallenge challenge = this.realmApi.otpChallenge("email", "verify", "testuser@tozny.com", null, null);
+        OTPChallenge challenge = this.realmApi.otpChallenge("email", "verify", this.userEmail, null, null);
 
         assertNotNull(challenge.getSessionId());
         assertNotNull(challenge.getPresence());
