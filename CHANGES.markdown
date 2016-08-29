@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.1.8] - 2016-08-29
+
+- Add realm.link_challenge calls
+- Add user.* calls for link/otp challenges, results, and challenge exchange
+
 ## [2.1.7] - 2016-06-27
 
 - Fix a Java 7 incompatibility
