@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.9] - 2016-08-29
+
+- Fix a Java compilation error with non-final variables passed to a Map
+
 ## [2.1.8] - 2016-08-29
 
 - Add realm.link_challenge calls

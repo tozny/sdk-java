@@ -54,7 +54,7 @@ public class UserApi {
      *
      * @return The session ID and presence token representing the challenge
      */
-    public Challenge linkChallenge(String destination, String endpoint, String context) {
+    public Challenge linkChallenge(final String destination, final String endpoint, final String context) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("destination", destination);
             put("endpoint", endpoint);
@@ -99,7 +99,7 @@ public class UserApi {
      *
      * @return The session ID and presence token representing the challenge
      */
-    private Challenge otpChallenge(String destination, String type, String context, String presence) {
+    private Challenge otpChallenge(final String destination, final String type, final String context, final String presence) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("type", type);
             put("context", context);
@@ -117,7 +117,7 @@ public class UserApi {
      *
      * @return A Realm-signed version of the OTP session.
      */
-    public Result linkResult(String otp) {
+    public Result linkResult(final String otp) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("otp", otp);
         }};
@@ -133,7 +133,7 @@ public class UserApi {
      *
      * @return A Realm-signed version of the OTP session.
      */
-    public Result otpResult(String otp, String session_id) {
+    public Result otpResult(final String otp, final String session_id) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("otp", otp);
             put("session_id", session_id);
@@ -150,7 +150,7 @@ public class UserApi {
      *
      * @return An object representing a device enrollment challenge
      */
-    public EnrollmentChallenge enrollmentChallengeExchange(String signed_data, String signature) {
+    public EnrollmentChallenge enrollmentChallengeExchange(final String signed_data, final String signature) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("signed_data", signed_data);
             put("signature", signature);
@@ -167,7 +167,7 @@ public class UserApi {
      *
      * @return An object representing the user that has just authenticated
      */
-    public AuthenticationChallenge authenticationChallengeExchange(String signed_data, String signature, String session_id) {
+    public AuthenticationChallenge authenticationChallengeExchange(final String signed_data, final String signature, final String session_id) {
         Map<String, String> args = new HashMap<String, String>() {{
             put("signed_data", signed_data);
             put("signature", signature);

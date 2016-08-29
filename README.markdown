@@ -13,7 +13,7 @@ Library interface to the [Tozny][] authentication service. Use this Library to:
 
 ## API Documentation
 
-https://jitpack.io/com/github/tozny/sdk-java/2.1.8/javadoc/
+https://jitpack.io/com/github/tozny/sdk-java/2.1.9/javadoc/
 
 ## Installing
 
@@ -26,7 +26,7 @@ repositories {
   maven { url "https://jitpack.io" }
 }
 dependencies {
-  compile 'com.github.tozny:sdk-java:2.1.8'
+  compile 'com.github.tozny:sdk-java:2.1.9'
 }
 ```
 
