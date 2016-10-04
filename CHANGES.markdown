@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.10] - 2016-10-04
+
+- Add realm.user_push calls
+
 ## [2.1.9] - 2016-08-29
 
 - Fix a Java compilation error with non-final variables passed to a Map
