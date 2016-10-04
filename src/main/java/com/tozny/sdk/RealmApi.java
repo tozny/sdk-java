@@ -20,8 +20,11 @@ import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddResponse;
 import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
+import com.tozny.sdk.realm.methods.user_push.UserPushRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetResponse;
+
+import javax.annotation.Nullable;
 
 /**
  * Main entry point to the Tozny API's Realm calls.
@@ -245,6 +248,14 @@ public class RealmApi {
         return ret != null && ret.equals("true");
     }
 
+    private boolean dispatchUserPush(UserPushRequest request) throws ToznyApiException {
+        ToznyApiResponse<Boolean[]> response = protocol.<ToznyApiResponse<Boolean[]>>dispatch(
+                request, new TypeReference<ToznyApiResponse<Boolean[]>>() {});
+
+        Boolean[] results = response.getResult();
+        return results != null && results.length >= 1 && results[0] != null && results[0];
+    }
+
     /**
      * Calls 'realm.question_challenge' to create a new question challenge session.
      *
@@ -303,6 +314,62 @@ public class RealmApi {
     public OTPChallenge otpChallenge(String type, String context, String destination, String presence, String data) throws ToznyApiException {
         OTPChallengeRequest req = new OTPChallengeRequest(type, context, destination, presence, data);
         return protocol.<OTPChallenge>dispatch(req, new TypeReference<OTPChallenge>() {});
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * One of `userId`, `email`, or `username` must be supplied.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param userId    Optional ID of the user to authenticate
+     * @param email     Optional email of the user to authenticate
+     * @param username  Optional username of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPush(String sessionId, @Nullable String userId, @Nullable String email, @Nullable String username) {
+        UserPushRequest request = new UserPushRequest(sessionId, userId, email, username);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param userId    ID of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushById(String sessionId, String userId) {
+        UserPushRequest request = new UserPushRequest(sessionId, userId, null, null);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param email     Email of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushByEmail(String sessionId, String email) {
+        UserPushRequest request = new UserPushRequest(sessionId, null, email, null);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param username  Username of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushByUsername(String sessionId, String username) {
+        UserPushRequest request = new UserPushRequest(sessionId, null, null, username);
+        return dispatchUserPush(request);
     }
 
     /**
