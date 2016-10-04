@@ -319,7 +319,7 @@ public class RealmApi {
      *
      * One of `userId`, `email`, or `username` must be supplied.
      *
-     * @param sessionId The session whos owner we are testing.
+     * @param sessionId The session whose owner we are testing.
      * @param userId    Optional ID of the user to authenticate
      * @param email     Optional email of the user to authenticate
      * @param username  Optional username of the user to authenticate
@@ -328,6 +328,45 @@ public class RealmApi {
      */
     public Boolean userPush(String sessionId, String userId, String email, String username) {
         UserPushRequest request = new UserPushRequest(sessionId, userId, email, username);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param userId    ID of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushById(String sessionId, String userId) {
+        UserPushRequest request = new UserPushRequest(sessionId, userId, null, null);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param email     Email of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushByEmail(String sessionId, String email) {
+        UserPushRequest request = new UserPushRequest(sessionId, null, email, null);
+        return dispatchUserPush(request);
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * @param sessionId The session whose owner we are testing.
+     * @param username  Username of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPushByUsername(String sessionId, String username) {
+        UserPushRequest request = new UserPushRequest(sessionId, null, null, username);
         return dispatchUserPush(request);
     }
 
