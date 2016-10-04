@@ -16,8 +16,8 @@ public class UserPushRequest implements ToznyApiRequest {
     @JsonProperty private String method = "realm.user_push";
     @JsonProperty private String session_id;
     @JsonProperty private String user_id;
-    @JsonProperty private String email;
-    @JsonProperty private String username;
+    @JsonProperty private String tozny_email;
+    @JsonProperty private String tozny_username;
 
     public UserPushRequest(String session_id, @Nullable String user_id, @Nullable String email, @Nullable String username) {
         if (user_id == null && email == null && username == null) {
@@ -25,8 +25,8 @@ public class UserPushRequest implements ToznyApiRequest {
         }
         this.session_id = session_id;
         this.user_id = user_id;
-        this.email = email;
-        this.username = username;
+        this.tozny_email = email;
+        this.tozny_username = username;
     }
 
     public String getMethod() {
@@ -44,11 +44,11 @@ public class UserPushRequest implements ToznyApiRequest {
 
     @Nullable
     public String getEmail() {
-        return email;
+        return tozny_email;
     }
 
     @Nullable
     public String getUsername() {
-        return username;
+        return tozny_username;
     }
 }

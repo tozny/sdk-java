@@ -247,10 +247,11 @@ public class RealmApi {
     }
 
     private boolean dispatchUserPush(UserPushRequest request) throws ToznyApiException {
-        ToznyApiResponse<Boolean> response = protocol.<ToznyApiResponse<Boolean>>dispatch(
-                request, new TypeReference<ToznyApiResponse<Boolean>>() {});
-        String ret = response.getReturn();
-        return ret != null && ret.equals("true");
+        ToznyApiResponse<Boolean[]> response = protocol.<ToznyApiResponse<Boolean[]>>dispatch(
+                request, new TypeReference<ToznyApiResponse<Boolean[]>>() {});
+
+        Boolean[] results = response.getResult();
+        return results != null && results.length == 1 && results[0];
     }
 
     /**
