@@ -20,6 +20,7 @@ import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddResponse;
 import com.tozny.sdk.realm.methods.user_device_add.UserDeviceAddRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetRequest;
 import com.tozny.sdk.realm.methods.user_get.UserGetResponse;
+import com.tozny.sdk.realm.methods.user_push.UserPushRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetResponse;
 
@@ -245,6 +246,13 @@ public class RealmApi {
         return ret != null && ret.equals("true");
     }
 
+    private boolean dispatchUserPush(UserPushRequest request) throws ToznyApiException {
+        ToznyApiResponse<Boolean> response = protocol.<ToznyApiResponse<Boolean>>dispatch(
+                request, new TypeReference<ToznyApiResponse<Boolean>>() {});
+        String ret = response.getReturn();
+        return ret != null && ret.equals("true");
+    }
+
     /**
      * Calls 'realm.question_challenge' to create a new question challenge session.
      *
@@ -303,6 +311,23 @@ public class RealmApi {
     public OTPChallenge otpChallenge(String type, String context, String destination, String presence, String data) throws ToznyApiException {
         OTPChallengeRequest req = new OTPChallengeRequest(type, context, destination, presence, data);
         return protocol.<OTPChallenge>dispatch(req, new TypeReference<OTPChallenge>() {});
+    }
+
+    /**
+     * Calls `realm.user_push` to push an authentication challenge to a given user.
+     *
+     * One of `userId`, `email`, or `username` must be supplied.
+     *
+     * @param sessionId The session whos owner we are testing.
+     * @param userId    Optional ID of the user to authenticate
+     * @param email     Optional email of the user to authenticate
+     * @param username  Optional username of the user to authenticate
+     *
+     * @return true on success
+     */
+    public Boolean userPush(String sessionId, String userId, String email, String username) {
+        UserPushRequest request = new UserPushRequest(sessionId, userId, email, username);
+        return dispatchUserPush(request);
     }
 
     /**
