@@ -253,7 +253,7 @@ public class RealmApi {
                 request, new TypeReference<ToznyApiResponse<Boolean[]>>() {});
 
         Boolean[] results = response.getResult();
-        return results != null && results.length == 1 && results[0];
+        return results != null && results.length >= 1 && results[0] != null && results[0];
     }
 
     /**
