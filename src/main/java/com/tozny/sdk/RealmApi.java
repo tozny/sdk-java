@@ -24,6 +24,8 @@ import com.tozny.sdk.realm.methods.user_push.UserPushRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetRequest;
 import com.tozny.sdk.realm.methods.users_get.UsersGetResponse;
 
+import javax.annotation.Nullable;
+
 /**
  * Main entry point to the Tozny API's Realm calls.
  * Realm cals are typically used by Service Providers, web-site owners, or realm operators.
@@ -326,7 +328,7 @@ public class RealmApi {
      *
      * @return true on success
      */
-    public Boolean userPush(String sessionId, String userId, String email, String username) {
+    public Boolean userPush(String sessionId, @Nullable String userId, @Nullable String email, @Nullable String username) {
         UserPushRequest request = new UserPushRequest(sessionId, userId, email, username);
         return dispatchUserPush(request);
     }
