@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.2.1] - 2018-1-19
+
+- Fix broken documentation
+
 ## [2.2.0] - 2018-01-19
 
 - Add dynamic authentication method calls
