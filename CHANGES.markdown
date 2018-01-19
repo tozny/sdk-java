@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.2.0] - 2018-01-19
+
+- Add dynamic authentication method calls
+
 ## [2.1.10] - 2016-10-04
 
 - Add realm.user_push calls
