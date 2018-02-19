@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.2.2] - 2018-2-19
+
+Removed unused dependency.
+
 ## [2.2.1] - 2018-1-19
 
 - Fix broken documentation
